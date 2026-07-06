@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Admin — A.C. Gervasoni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a96a; --cream: #f4f6fb; --cream-dim: #c6cee0;
+  --bg: #070D22; --panel: #0d1734; --line: rgba(255,255,255,0.1);
+  --ff-d: 'Fraunces', serif; --ff-s: 'Geist', sans-serif; --ff-m: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--cream); font-family: var(--ff-s); font-size: 15px; }
+body { min-height: 100vh; }
+a { color: var(--gold); text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea, select {
+  width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 10px;
+  color: var(--cream); font-family: var(--ff-s); font-size: 14px; padding: 10px 12px; outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: rgba(200,169,106,0.5); }
+textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+select { appearance: auto; }
+select option { background: var(--panel); }
+
+/* GATE */
+.gate { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--bg); }
+.gate-card {
+  width: min(380px, 90vw); padding: 44px 40px; border-radius: 24px; text-align: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.gate-card h1 { font-family: var(--ff-d); font-style: italic; font-weight: 300; font-size: 30px; margin-bottom: 6px; }
+.gate-card p { font-family: var(--ff-m); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 26px; }
+.gate-card input { text-align: center; font-family: var(--ff-m); letter-spacing: 0.3em; }
+.gate-err { color: #e08585; font-size: 12px; margin-top: 10px; min-height: 16px; }
+
+/* LAYOUT */
+.wrap { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+.side {
+  border-right: 1px solid var(--line); padding: 28px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: rgba(255,255,255,0.02);
+}
+.side .brand { font-family: var(--ff-d); font-style: italic; font-size: 19px; padding: 0 12px 20px; }
+.side .brand em { color: var(--gold); font-style: normal; }
+.side button {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; border-radius: 10px; font-size: 14px;
+  color: var(--cream-dim); margin-bottom: 2px; transition: all 0.2s;
+}
+.side button:hover { background: rgba(255,255,255,0.06); color: var(--cream); }
+.side button.on { background: rgba(200,169,106,0.15); color: var(--gold); }
+.side .back { margin-top: 24px; font-size: 12.5px; opacity: 0.7; }
+
+.main { padding: 36px 44px 140px; max-width: 980px; }
+.main h2 { font-family: var(--ff-d); font-weight: 300; font-size: 34px; margin-bottom: 4px; }
+.main h2 em { font-style: italic; color: var(--gold); }
+.main .sub { font-family: var(--ff-m); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 30px; }
+
+.f { margin-bottom: 18px; }
+.f label { display: block; font-family: var(--ff-m); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 7px; }
+.bi { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bi .tag { font-size: 9px; opacity: 0.6; margin-left: 6px; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+
+.item-card {
+  border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin-bottom: 18px;
+  background: rgba(255,255,255,0.03); position: relative;
+}
+.item-card .num { font-family: var(--ff-m); font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 14px; }
+.rm { position: absolute; top: 14px; right: 14px; font-size: 12px; color: #e08585; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(224,133,133,0.3); transition: background 0.2s; }
+.rm:hover { background: rgba(224,133,133,0.12); }
+.add {
+  width: 100%; padding: 14px; border-radius: 14px; border: 1px dashed rgba(200,169,106,0.4); color: var(--gold);
+  font-size: 14px; transition: background 0.2s;
+}
+.add:hover { background: rgba(200,169,106,0.08); }
+
+/* rich toolbar */
+.rich-bar { position: fixed; z-index: 60; display: none; gap: 4px; padding: 6px; border-radius: 12px;
+  background: rgba(13,23,52,0.95); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
+.rich-bar button { padding: 6px 11px; border-radius: 8px; font-size: 13px; color: var(--cream); }
+.rich-bar button:hover { background: rgba(255,255,255,0.1); }
+.rich-bar button.i { font-style: italic; font-family: var(--ff-d); }
+.rich-bar button.b { font-weight: 700; }
+.rich-bar button.g { color: var(--gold); }
+
+/* color fields */
+.color-f { display: flex; align-items: center; gap: 12px; }
+.color-f input[type="color"] { width: 52px; height: 40px; padding: 3px; cursor: pointer; }
+.color-f input[type="text"] { flex: 1; font-family: var(--ff-m); }
+
+/* save bar */
+.savebar {
+  position: fixed; bottom: 0; left: 230px; right: 0; z-index: 50;
+  display: flex; align-items: center; gap: 10px; padding: 16px 44px;
+  background: rgba(7,13,34,0.9); backdrop-filter: blur(16px); border-top: 1px solid var(--line);
+}
+.btn { padding: 11px 20px; border-radius: 100px; font-size: 13.5px; font-weight: 500; transition: all 0.2s; }
+.btn.primary { background: linear-gradient(135deg, rgba(200,169,106,0.9), rgba(200,169,106,0.7)); color: #14100a; }
+.btn.primary:hover { transform: translateY(-1px); }
+.btn.ghost { border: 1px solid var(--line); color: var(--cream-dim); }
+.btn.ghost:hover { color: var(--cream); border-color: rgba(255,255,255,0.3); }
+.btn.danger { border: 1px solid rgba(224,133,133,0.35); color: #e08585; }
+.toast { margin-left: auto; font-family: var(--ff-m); font-size: 11px; letter-spacing: 0.15em; color: var(--gold); opacity: 0; transition: opacity 0.3s; }
+.toast.show { opacity: 1; }
+.note { font-size: 12.5px; line-height: 1.6; color: var(--cream-dim); border-left: 2px solid var(--gold); padding: 10px 16px; margin-bottom: 26px; background: rgba(200,169,106,0.05); border-radius: 0 10px 10px 0; }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; }
+  .side { position: static; height: auto; display: flex; flex-wrap: wrap; gap: 4px; border-right: none; border-bottom: 1px solid var(--line); }
+  .side .brand { width: 100%; }
+  .side button { width: auto; }
+  .main { padding: 24px 20px 160px; }
+  .savebar { left: 0; padding: 12px 16px; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <h1>A<em style="color:var(--gold);font-style:normal;">.</em>C<em style="color:var(--gold);font-style:normal;">.</em> Admin</h1>
+    <p>Area riservata</p>
+    <input type="password" id="gatePass" placeholder="••••••" autocomplete="off" />
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app" style="visibility:hidden;">
+  <aside class="side">
+    <div class="brand">A<em>.</em>C<em>.</em> Gervasoni</div>
+    <nav id="sideNav"></nav>
+    <div class="back"><a href="../Portfolio.html">← Torna al sito</a></div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<div class="rich-bar" id="richBar">
+  <button class="i" data-tag="em" title="Corsivo">I</button>
+  <button class="b" data-tag="strong" title="Grassetto">B</button>
+  <button class="g" data-tag="gold" title="Oro">A</button>
+</div>
+
+<div class="savebar" id="savebar" style="display:none;">
+  <button class="btn primary" id="btnSave">Salva</button>
+  <button class="btn ghost" id="btnPreview">Anteprima sito</button>
+  <button class="btn ghost" id="btnExport">Esporta content.js</button>
+  <button class="btn danger" id="btnReset">Ripristina originale</button>
+  <span class="toast" id="toast">SALVATO ✓</span>
+</div>
+
+<script src="../content.js"></script>
+<script>
+/* ============ STATE ============ */
+let DATA = JSON.parse(JSON.stringify(window.ACG || window.ACG_DEFAULT));
+if (!DATA.admin) DATA.admin = { pass: 'ACG2026' };
+
+/* ============ GATE ============ */
+(function gate(){
+  const g = document.getElementById('gate'), inp = document.getElementById('gatePass'), err = document.getElementById('gateErr');
+  const ok = () => { g.style.display = 'none'; document.getElementById('app').style.visibility = 'visible'; document.getElementById('savebar').style.display = 'flex'; };
+  if (sessionStorage.getItem('acg-admin-ok') === '1') { ok(); return; }
+  inp.focus();
+  inp.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (inp.value === (DATA.admin.pass || 'ACG2026')) { sessionStorage.setItem('acg-admin-ok', '1'); ok(); }
+    else { err.textContent = 'Codice errato'; inp.value = ''; }
+  });
+})();
+
+/* ============ HELPERS ============ */
+const $ = s => document.querySelector(s);
+function el(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  for (const k in (attrs||{})) {
+    if (k === 'class') n.className = attrs[k];
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const kid of kids) n.append(kid);
+  return n;
+}
+function field(label, input) { return el('div', {class:'f'}, el('label', {}, label), input); }
+function txt(value, oninput, multiline) {
+  const n = document.createElement(multiline ? 'textarea' : 'input');
+  n.value = value == null ? '' : value;
+  n.addEventListener('input', () => oninput(n.value));
+  if (multiline) n.classList.add('rich');
+  return n;
+}
+/* campo bilingue IT/EN su oggetto {it,en} */
+function biField(label, obj, key, multiline=true) {
+  if (!obj[key]) obj[key] = { it: '', en: '' };
+  const wrap = el('div', {class:'bi'});
+  ['it','en'].forEach(lng => {
+    const cell = el('div', {});
+    cell.append(el('label', {}, label + ' ', el('span', {class:'tag'}, lng.toUpperCase())));
+    cell.append(txt(obj[key][lng], v => obj[key][lng] = v, multiline));
+    wrap.append(cell);
+  });
+  const f = el('div', {class:'f'});
+  f.append(wrap);
+  return f;
+}
+
+/* ============ RICH TOOLBAR (corsivo / grassetto / oro) ============ */
+(function richBar(){
+  const bar = document.getElementById('richBar');
+  let active = null;
+  document.addEventListener('focusin', e => {
+    if (e.target.matches('textarea.rich')) {
+      active = e.target;
+      const r = e.target.getBoundingClientRect();
+      bar.style.display = 'flex';
+      bar.style.top = (r.top + window.scrollY - 44) + 'px';
+      bar.style.left = (r.left + window.scrollX) + 'px';
+    }
+  });
+  document.addEventListener('focusout', e => {
+    setTimeout(() => { if (!bar.contains(document.activeElement)) bar.style.display = 'none'; }, 150);
+  });
+  bar.querySelectorAll('button').forEach(b => b.addEventListener('mousedown', e => {
+    e.preventDefault();
+    if (!active) return;
+    const tag = b.dataset.tag;
+    const [s, en] = [active.selectionStart, active.selectionEnd];
+    const sel = active.value.slice(s, en) || 'testo';
+    const wrapped = tag === 'gold'
+      ? '<span style="color: var(--gold);">' + sel + '</span>'
+      : '<' + tag + '>' + sel + '</' + tag + '>';
+    active.setRangeText(wrapped, s, en, 'end');
+    active.dispatchEvent(new Event('input'));
+    active.focus();
+  }));
+})();
+
+/* ============ PANELS ============ */
+const PANELS = [
+  { id: 'theme', name: 'Tema & colori' },
+  { id: 'hero', name: 'Hero / Nome' },
+  { id: 'about', name: 'Chi sono' },
+  { id: 'stats', name: 'Statistiche' },
+  { id: 'experience', name: 'Esperienze' },
+  { id: 'education', name: 'Educazione' },
+  { id: 'certifications', name: 'Certificazioni' },
+  { id: 'languages', name: 'Lingue' },
+  { id: 'titles', name: 'Titoli sezioni' },
+  { id: 'nav', name: 'Navigazione & varie' },
+  { id: 'projects', name: 'Progetti' },
+  { id: 'settings', name: 'Impostazioni' }
+];
+let current = 'theme';
+
+function colorField(label, key) {
+  const val = DATA.palette[key] || '#c8a96a';
+  const c = el('input', {type:'color', value: val});
+  const t = el('input', {type:'text', value: val});
+  c.addEventListener('input', () => { DATA.palette[key] = c.value; t.value = c.value; });
+  t.addEventListener('input', () => { DATA.palette[key] = t.value; if (/^#[0-9a-f]{6}$/i.test(t.value)) c.value = t.value; });
+  return field(label, el('div', {class:'color-f'}, c, t));
+}
+function textKeyField(label, key, multiline=true) {
+  const wrap = el('div', {class:'bi'});
+  ['it','en'].forEach(lng => {
+    if (!DATA.texts[lng]) DATA.texts[lng] = {};
+    const cell = el('div', {});
+    cell.append(el('label', {}, label + ' ', el('span', {class:'tag'}, lng.toUpperCase())));
+    cell.append(txt(DATA.texts[lng][key], v => DATA.texts[lng][key] = v, multiline));
+    wrap.append(cell);
+  });
+  return el('div', {class:'f'}, wrap);
+}
+function arrayPanel(main, arr, renderItem, makeNew, addLabel) {
+  arr.forEach((item, i) => {
+    const card = el('div', {class:'item-card'});
+    card.append(el('div', {class:'num'}, '/ ' + String(i+1).padStart(2,'0')));
+    card.append(el('button', {class:'rm', onclick: () => { arr.splice(i,1); renderPanel(current); }}, 'Rimuovi'));
+    renderItem(card, item);
+    main.append(card);
+  });
+  main.append(el('button', {class:'add', onclick: () => { arr.push(makeNew()); renderPanel(current); }}, '＋ ' + addLabel));
+}
+
+function renderPanel(id) {
+  current = id;
+  document.querySelectorAll('#sideNav button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  const H = (t, s) => { main.append(el('h2', {}, t)); main.append(el('div', {class:'sub'}, s)); };
+
+  if (id === 'theme') {
+    H('Tema & colori', 'Palette globale del sito');
+    main.append(el('div', {class:'note'}, 'Seleziona il testo in un campo e usa la barra I / B / A per corsivo, grassetto e colore oro. I campi accettano anche HTML.'));
+    main.append(colorField('Oro / accento', 'gold'));
+    main.append(colorField('Testo principale', 'cream'));
+    main.append(colorField('Testo secondario', 'creamDim'));
+  }
+  if (id === 'hero') {
+    H('Hero', 'Il nome che si compone lettera per lettera');
+    ['first','middle','last'].forEach((k, i) => {
+      main.append(field(['Prima riga','Seconda riga','Terza riga (oro, grande)'][i], txt(DATA.hero[k], v => DATA.hero[k] = v, false)));
+    });
+    main.append(textKeyField('Ruolo (sottotitolo)', 'hero.role', false));
+    main.append(textKeyField('Scritta scroll', 'hero.scroll', false));
+  }
+  if (id === 'about') {
+    H('Chi sono', 'Sezione I');
+    ['about.kicker','about.title','about.p1','about.p2','about.quote','about.p3'].forEach((k, i) => {
+      main.append(textKeyField(['Kicker','Titolo','Paragrafo 1','Paragrafo 2','Citazione','Paragrafo 3'][i], k, i>0));
+    });
+  }
+  if (id === 'stats') {
+    H('Statistiche', 'I contatori animati in Chi sono');
+    arrayPanel(main, DATA.stats, (card, s) => {
+      card.append(field('Numero / valore', txt(s.n, v => s.n = v, false)));
+      card.append(biField('Etichetta', s, 'l', false));
+    }, () => ({ n: '0', l: { it: '', en: '' } }), 'Aggiungi statistica');
+  }
+  if (id === 'experience' || id === 'education') {
+    H(id === 'experience' ? 'Esperienze' : 'Educazione', 'Box della timeline — aggiungi o rimuovi liberamente');
+    arrayPanel(main, DATA[id], (card, it) => {
+      card.append(biField('Data', it, 'date', false));
+      card.append(biField('Titolo', it, 'title', false));
+      card.append(biField(id === 'experience' ? 'Ente / luogo' : 'Sottotitolo', it, 'sub', false));
+      card.append(biField('Descrizione', it, 'desc', true));
+    }, () => ({ date:{it:'',en:''}, title:{it:'',en:''}, sub:{it:'',en:''}, desc:{it:'',en:''} }), 'Aggiungi box');
+  }
+  if (id === 'certifications') {
+    H('Certificazioni', 'Card della sezione IV');
+    arrayPanel(main, DATA.certifications, (card, c) => {
+      const r = el('div', {class:'row'});
+      r.append(field('Livello (es. B1)', txt(c.level, v => c.level = v, false)));
+      const sel = el('select', {},
+        el('option', {value:'1'}, 'Conseguita (oro)'),
+        el('option', {value:'0'}, 'In programma (grigio)'));
+      sel.value = c.done ? '1' : '0';
+      sel.addEventListener('change', () => c.done = sel.value === '1');
+      r.append(field('Stato visivo', sel));
+      r.append(field('Meta sinistra', txt(c.meta1, v => c.meta1 = v, false)));
+      r.append(field('Meta destra', txt(c.meta2, v => c.meta2 = v, false)));
+      card.append(r);
+      card.append(biField('Titolo', c, 'title', false));
+      card.append(biField('Descrizione', c, 'desc', true));
+      card.append(biField('Badge stato', c, 'status', false));
+    }, () => ({ level:'A1', done:false, title:{it:'',en:''}, desc:{it:'',en:''}, status:{it:'In programma',en:'Planned'}, meta1:'', meta2:'' }), 'Aggiungi certificazione');
+  }
+  if (id === 'languages') {
+    H('Lingue', 'Card con bandiera e barra di livello');
+    arrayPanel(main, DATA.languages, (card, l) => {
+      const r = el('div', {class:'row'});
+      const sel = el('select', {},
+        el('option', {value:'it'}, 'Italia'), el('option', {value:'uk'}, 'Regno Unito'),
+        el('option', {value:'es'}, 'Spagna'), el('option', {value:'cn'}, 'Cina'),
+        el('option', {value:'none'}, 'Iniziali (senza bandiera)'));
+      sel.value = l.flag || 'none';
+      sel.addEventListener('change', () => l.flag = sel.value);
+      r.append(field('Bandiera', sel));
+      const pct = el('input', {type:'number', min:'0', max:'100', value: l.pct != null ? l.pct : 0});
+      pct.addEventListener('input', () => l.pct = Math.max(0, Math.min(100, +pct.value || 0)));
+      r.append(field('Livello barra (0–100)', pct));
+      card.append(r);
+      card.append(biField('Nome lingua', l, 'name', false));
+      card.append(biField('Livello (testo)', l, 'lvl', false));
+    }, () => ({ flag:'none', name:{it:'',en:''}, lvl:{it:'',en:''}, pct:20 }), 'Aggiungi lingua');
+  }
+  if (id === 'titles') {
+    H('Titoli sezioni', 'Kicker e titoli di ogni sezione');
+    [['exp.kicker','Esperienze — kicker'],['exp.title','Esperienze — titolo'],
+     ['edu.kicker','Educazione — kicker'],['edu.title','Educazione — titolo'],
+     ['cert.kicker','Certificazioni — kicker'],['cert.title','Certificazioni — titolo'],
+     ['lang.kicker','Lingue — kicker'],['lang.title','Lingue — titolo']
+    ].forEach(([k, lab]) => main.append(textKeyField(lab, k, true)));
+  }
+  if (id === 'nav') {
+    H('Navigazione & varie', 'Menu, nastro scorrevole, footer');
+    [['nav.home','Menu — Home'],['nav.experience','Menu — Esperienze'],['nav.education','Menu — Educazione'],
+     ['nav.certs','Menu — Certificazioni'],['nav.lang','Menu — Lingue'],['nav.projects','Bottone Progetti'],
+     ['rb.a','Nastro — 1'],['rb.b','Nastro — 2'],['rb.c','Nastro — 3'],['rb.d','Nastro — 4'],
+     ['footer.made','Footer — destra'],['footer.egg','Footer — easter egg']
+    ].forEach(([k, lab]) => main.append(textKeyField(lab, k, false)));
+  }
+  if (id === 'projects') {
+    H('Progetti', 'Pannello laterale progetti digitali');
+    [['proj.sub','Sottotitolo'],['proj.title','Titolo'],['proj.desc','Descrizione'],
+     ['proj.1.t','Progetto 1 — titolo'],['proj.1.d','Progetto 1 — descrizione'],
+     ['proj.2.t','Progetto 2 — titolo'],['proj.2.d','Progetto 2 — descrizione'],
+     ['proj.3.t','Progetto 3 — titolo'],['proj.3.d','Progetto 3 — descrizione'],
+     ['proj.status','Badge stato']
+    ].forEach(([k, lab]) => main.append(textKeyField(lab, k, k.endsWith('.d') || k === 'proj.desc')));
+  }
+  if (id === 'settings') {
+    H('Impostazioni', 'Accesso e manutenzione');
+    main.append(field('Codice di accesso admin', txt(DATA.admin.pass, v => DATA.admin.pass = v, false)));
+    main.append(el('div', {class:'note'},
+      'Come funziona il salvataggio: “Salva” applica le modifiche a QUESTO browser (le vedi subito sul sito). ' +
+      'Per pubblicarle per tutti i visitatori: “Esporta content.js”, sostituisci il file content.js nel repository GitHub e fai commit. ' +
+      'Il codice di accesso è una protezione leggera lato client: non mettere mai dati sensibili nel sito.'));
+  }
+}
+
+/* side nav */
+(function(){
+  const nav = document.getElementById('sideNav');
+  PANELS.forEach(p => nav.append(el('button', {'data-id': p.id, onclick: () => renderPanel(p.id)}, p.name)));
+  renderPanel('theme');
+})();
+
+/* ============ ACTIONS ============ */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+document.getElementById('btnSave').addEventListener('click', () => {
+  localStorage.setItem('acg-content', JSON.stringify(DATA));
+  toast('SALVATO ✓');
+});
+document.getElementById('btnPreview').addEventListener('click', () => {
+  localStorage.setItem('acg-content', JSON.stringify(DATA));
+  window.open('../Portfolio.html', '_blank');
+});
+document.getElementById('btnExport').addEventListener('click', () => {
+  localStorage.setItem('acg-content', JSON.stringify(DATA));
+  const body = '/* Contenuti del sito — generato dal pannello admin il ' + new Date().toLocaleString('it-IT') + ' */\n' +
+    'window.ACG_DEFAULT = ' + JSON.stringify(DATA, null, 2) + ';\n\n' +
+    '(function () {\n' +
+    '  function dm(a, b) {\n' +
+    '    if (Array.isArray(b)) return b.slice();\n' +
+    '    if (b && typeof b === "object") { const o = Object.assign({}, a); for (const k in b) o[k] = dm(a && a[k], b[k]); return o; }\n' +
+    '    return b === undefined ? a : b;\n' +
+    '  }\n' +
+    '  let stored = null;\n' +
+    '  try { stored = JSON.parse(localStorage.getItem("acg-content")); } catch (e) {}\n' +
+    '  window.ACG = stored ? dm(window.ACG_DEFAULT, stored) : window.ACG_DEFAULT;\n' +
+    '  window.ACG_MERGE = dm;\n' +
+    '})();\n';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([body], {type:'text/javascript'}));
+  a.download = 'content.js';
+  a.click();
+  toast('ESPORTATO — sostituisci content.js nel repo');
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (!confirm('Eliminare tutte le modifiche locali e tornare al contenuto originale?')) return;
+  localStorage.removeItem('acg-content');
+  location.reload();
+});
+</script>
+</body>
+</html>
