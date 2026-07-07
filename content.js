@@ -5,6 +5,7 @@
    versione da commitare su GitHub.
    ===================================================== */
 window.ACG_DEFAULT = {
+  "_v": 3,
   "admin": { "pass": "ACG2026" },
   "palette": {
     "gold": "#c8a96a",
@@ -12,19 +13,13 @@ window.ACG_DEFAULT = {
     "creamDim": "#c6cee0"
   },
   "hero": { "first": "Andrea", "middle": "Celeste", "last": "Gervasoni" },
-  "stats": [
-    { "n": "16", "l": { "it": "anni", "en": "years old" } },
-    { "n": "10", "l": { "it": "e lode all'esame", "en": "cum laude · exam" } },
-    { "n": "4",  "l": { "it": "lingue", "en": "languages" } },
-    { "n": "B1", "l": { "it": "Cambridge", "en": "Cambridge" } }
-  ],
   "experience": [
     {
       "date":  { "it": "Giugno 2026", "en": "June 2026" },
-      "title": { "it": "Settimana di Robotica", "en": "Robotics Week" },
-      "sub":   { "it": "Università degli Studi di Bergamo", "en": "University of Bergamo" },
-      "desc":  { "it": "Progetto intensivo presso l'Università di Bergamo. Settimana immersiva nel mondo della robotica — dalla programmazione all'assemblaggio, dall'elettronica al controllo dei sensori.",
-                 "en": "Intensive project at the University of Bergamo. An immersive week into robotics — programming, assembly, electronics, and sensor control." }
+      "title": { "it": "Visita a un impianto fotovoltaico", "en": "Visit to a photovoltaic plant" },
+      "sub":   { "it": "Casei Gerola · in collaborazione con Obton", "en": "Casei Gerola · in collaboration with Obton" },
+      "desc":  { "it": "Visita tecnica a un impianto fotovoltaico a Casei Gerola, realizzata in collaborazione con Obton. Raccolta e analisi dei dati di campo sul funzionamento e la resa dell'impianto.",
+                 "en": "Technical visit to a photovoltaic plant in Casei Gerola, in collaboration with Obton. Field data collection and analysis on the plant's operation and output." }
     },
     {
       "date":  { "it": "Aprile 2026", "en": "April 2026" },
@@ -51,10 +46,16 @@ window.ACG_DEFAULT = {
     },
     {
       "date":  { "it": "2020 — 2023", "en": "2020 — 2023" },
-      "title": { "it": "Scuola Secondaria di Primo Grado", "en": "Middle School" },
+      "title": { "it": "Scuola Secondaria di Primo Grado \"S. Alessandro\"", "en": "Middle School \"S. Alessandro\"" },
       "sub":   { "it": "Esame di stato — 10 e lode", "en": "Final exam — 10 cum laude" },
       "desc":  { "it": "Conclusione del ciclo con la massima votazione. Riconoscimento del percorso completo su tutte le discipline: scientifiche, umanistiche, linguistiche.",
                  "en": "Completed the cycle with the highest mark — a recognition across all disciplines: scientific, humanistic, linguistic." }
+    },
+    {
+      "date":  { "it": "2015 — 2020", "en": "2015 — 2020" },
+      "title": { "it": "Scuola Primaria Paritaria \"G. Donizetti\"", "en": "Primary School \"G. Donizetti\"" },
+      "sub":   { "it": "Cinque anni · Bergamo", "en": "Five years · Bergamo" },
+      "desc":  { "it": "", "en": "" }
     }
   ],
   "certifications": [
@@ -81,12 +82,34 @@ window.ACG_DEFAULT = {
     { "flag": "es", "name": { "it": "Spagnolo", "en": "Spanish" },  "lvl": { "it": "Base · A1", "en": "Beginner · A1" }, "pct": 22 },
     { "flag": "cn", "name": { "it": "Cinese", "en": "Chinese" },    "lvl": { "it": "A1 · passione da sempre", "en": "A1 · lifelong passion" }, "pct": 22 }
   ],
+  "projects": [
+    {
+      "title": "Orizzonte",
+      "desc": {
+        "it": "Simulatore Monte Carlo per la pensione integrativa italiana. Invece di un rendimento fisso, simula migliaia di futuri possibili del fondo e mostra il risultato come distribuzione di probabilità — scenario sfortunato, tipico e fortunato — in euro di oggi, al netto di costi e tasse italiane.",
+        "en": "A Monte Carlo simulator for the Italian supplementary pension. Instead of one fixed return, it plays out thousands of possible futures for the fund and shows the result as a probability distribution — unlucky, typical, lucky — in today's euros, net of costs and Italian taxes."
+      },
+      "live": "https://andrea-gervasoni.github.io/Orizzonte-site/",
+      "github": "https://github.com/Andrea-Gervasoni/Orizzonte-cpp",
+      "status": { "it": "Pubblicato", "en": "Live" }
+    },
+    {
+      "title": "Formularium",
+      "desc": {
+        "it": "Formulario di matematica interattivo e pubblico per lo scientifico. Ogni argomento è una scheda con formula, esempio svolto, errore comune, grafico interattivo e collegamenti — matematica in KaTeX, grafici live con JSXGraph.",
+        "en": "A public, interactive mathematics formulary for liceo scientifico students. Each topic is a card with formula, worked example, common mistake, interactive diagram and connections — mathematics typeset in KaTeX, live graphs powered by JSXGraph."
+      },
+      "live": "https://andrea-gervasoni.github.io/formularium/",
+      "github": "https://github.com/Andrea-Gervasoni/formularium",
+      "status": { "it": "Pubblicato", "en": "Live" }
+    }
+  ],
   "texts": {
     "it": {
       "nav.home": "Home", "nav.experience": "Esperienze", "nav.education": "Educazione", "nav.certs": "Certificazioni", "nav.lang": "Lingue", "nav.projects": "Progetti",
       "about.kicker": "Chi sono",
       "about.title": "Una <em>mente curiosa</em>, tra numeri e parole.",
-      "about.p1": "Ho <strong>sedici anni</strong> e vivo a Bergamo. Frequento il <strong>Liceo Scientifico Lorenzo Mascheroni</strong>, indirizzo scienze applicate. Alla scuola media ho concluso con <em>dieci e lode</em>, un piccolo traguardo che porto con me come promemoria del metodo che cerco di coltivare ogni giorno.",
+      "about.p1": "Ho <strong>sedici anni</strong> e vivo a Bergamo. Frequento il <strong>Liceo Scientifico Lorenzo Mascheroni</strong>, indirizzo scienze applicate.",
       "about.p2": "Ho imparato presto a non scegliere tra umanistico e scientifico: leggo, studio, scrivo.",
       "about.quote": "«Conoscere non basta; dobbiamo applicare. Volere non basta; dobbiamo fare.»",
       "about.p3": "La mia ambizione? <em>Essere ammesso all'università dei miei sogni.</em> Questo sito è la mappa di come ci sto arrivando: certificazioni, esperienze, progetti, letture. Un archivio vivo, che si aggiorna con me.",
@@ -103,14 +126,15 @@ window.ACG_DEFAULT = {
       "proj.2.t": "Progetto due", "proj.2.d": "In arrivo.",
       "proj.3.t": "Progetto tre", "proj.3.d": "In arrivo.",
       "proj.status": "In aggiornamento",
-      "hero.scroll": "Scorri", "hero.role": "Studente &amp; curioso",
+      "proj.live": "Sito", "proj.code": "Codice",
+      "hero.scroll": "Scorri", "hero.role": "Studente",
       "rb.a": "Matematica", "rb.b": "Fisica", "rb.c": "Finanza", "rb.d": "Filosofia"
     },
     "en": {
       "nav.home": "Home", "nav.experience": "Experience", "nav.education": "Education", "nav.certs": "Certifications", "nav.lang": "Languages", "nav.projects": "Projects",
       "about.kicker": "About",
       "about.title": "A <em>curious mind</em>, between numbers and words.",
-      "about.p1": "I'm <strong>sixteen</strong> and I live in Bergamo. I attend the <strong>Liceo Scientifico Lorenzo Mascheroni</strong>, applied sciences track. I finished middle school with <em>10 cum laude</em> — a small milestone I carry as a reminder of the method I try to cultivate every day.",
+      "about.p1": "I'm <strong>sixteen</strong> and I live in Bergamo. I attend the <strong>Liceo Scientifico Lorenzo Mascheroni</strong>, applied sciences track.",
       "about.p2": "I learned early not to pick between humanities and sciences: I read, study, write.",
       "about.quote": "«Knowing is not enough; we must apply. Willing is not enough; we must do.»",
       "about.p3": "My ambition? <em>To be admitted to the university of my dreams.</em> This site is the map of how I'm getting there: certifications, experiences, projects, readings. A living archive, updated as I grow.",
@@ -127,7 +151,8 @@ window.ACG_DEFAULT = {
       "proj.2.t": "Project two", "proj.2.d": "Coming soon.",
       "proj.3.t": "Project three", "proj.3.d": "Coming soon.",
       "proj.status": "Updating",
-      "hero.scroll": "Scroll", "hero.role": "Student &amp; curious",
+      "proj.live": "Website", "proj.code": "Code",
+      "hero.scroll": "Scroll", "hero.role": "Student",
       "rb.a": "Mathematics", "rb.b": "Physics", "rb.c": "Finance", "rb.d": "Philosophy"
     }
   }
@@ -146,6 +171,8 @@ window.ACG_DEFAULT = {
   }
   let stored = null;
   try { stored = JSON.parse(localStorage.getItem('acg-content')); } catch (e) {}
+  // Se la versione salvata non corrisponde a quella di content.js, i dati sono superati: ignorali.
+  if (stored && stored._v !== window.ACG_DEFAULT._v) stored = null;
   window.ACG = stored ? dm(window.ACG_DEFAULT, stored) : window.ACG_DEFAULT;
   window.ACG_MERGE = dm;
 })();

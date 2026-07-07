@@ -489,6 +489,14 @@ h2.reveal.in { opacity: 1; transform: none; clip-path: inset(-10% 0 -12% 0); }
 .project-item:hover h3 { color: var(--gold); }
 .project-item .desc { font-size: 13.5px; color: var(--cream-dim); line-height: 1.55; font-weight: 300; }
 .project-item .status { display: inline-block; margin-top: 10px; font-family: var(--ff-mono); font-size: 10px; letter-spacing: 0.2em; color: var(--cream-dim); padding: 3px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; }
+.project-links { display: flex; gap: 10px; margin-top: 16px; }
+.project-links a {
+  display: flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 100px; font-size: 12px; font-weight: 500;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); color: var(--cream);
+  transition: all 0.25s;
+}
+.project-links a:hover { background: rgba(200,169,106,0.18); border-color: rgba(200,169,106,0.4); color: var(--gold); transform: translateY(-1px); }
+.project-links svg { width: 13px; height: 13px; }
 
 footer { padding: 40px 0 30px; margin-top: 60px; font-family: var(--ff-mono); font-size: 11px; letter-spacing: 0.15em; color: var(--cream-dim); border-top: 1px solid rgba(255,255,255,0.08); }
 
@@ -673,7 +681,6 @@ footer { padding: 40px 0 30px; margin-top: 60px; font-family: var(--ff-mono); fo
           <p data-i18n="about.p2">Ho imparato presto a non scegliere tra umanistico e scientifico: leggo, studio, scrivo.</p>
           <div class="pull-quote" data-i18n="about.quote">«Conoscere non basta; dobbiamo applicare. Volere non basta; dobbiamo fare.»</div>
           <p data-i18n="about.p3">La mia ambizione? <em>Essere ammesso all'università dei miei sogni.</em> Questo sito è la mappa di come ci sto arrivando: certificazioni, esperienze, progetti, letture. Un archivio vivo, che si aggiorna con me.</p>
-          <div class="stats-row reveal" id="statsRow"></div>
         </div>
       </div>
     </div>
@@ -823,9 +830,7 @@ footer { padding: 40px 0 30px; margin-top: 60px; font-family: var(--ff-mono); fo
   <div class="sub" data-i18n="proj.sub">→ In aggiornamento</div>
   <h2 data-i18n="proj.title">Progetti <em style="color: var(--gold); font-style: italic;">digitali</em></h2>
   <p style="color: var(--cream); margin: 20px 0 40px; line-height: 1.6; font-weight: 300;" data-i18n="proj.desc">Questa sezione ospiterà i miei progetti digitali — esperimenti, strumenti, visualizzazioni. Sto preparando i primi da condividere.</p>
-  <a class="project-item"><div class="num">/ 01</div><h3 data-i18n="proj.1.t">Progetto uno</h3><div class="desc" data-i18n="proj.1.d">In arrivo.</div><span class="status" data-i18n="proj.status">In aggiornamento</span></a>
-  <a class="project-item"><div class="num">/ 02</div><h3 data-i18n="proj.2.t">Progetto due</h3><div class="desc" data-i18n="proj.2.d">In arrivo.</div><span class="status" data-i18n="proj.status">In aggiornamento</span></a>
-  <a class="project-item"><div class="num">/ 03</div><h3 data-i18n="proj.3.t">Progetto tre</h3><div class="desc" data-i18n="proj.3.d">In arrivo.</div><span class="status" data-i18n="proj.status">In aggiornamento</span></a>
+  <div id="projList"></div>
 </aside>
 
 <script src="content.js"></script>
@@ -932,12 +937,31 @@ function renderAll(revealNow){
       '<div class="lang-bar"><div class="lang-bar-fill" style="width:' + (l.pct||0) + '%;"></div></div>' +
       '</div>';
   }).join('');
-  const sr = document.getElementById('statsRow');
+  const sr = null;
   if (sr) sr.innerHTML = (ACG.stats||[]).map(s => {
     const numeric = /^\d+$/.test(String(s.n).trim());
     const useCounter = numeric && !revealNow;
     return '<div class="stat"><span class="stat-n"' + (useCounter ? ' data-count="' + s.n + '"' : '') + '>' + (useCounter ? '0' : s.n) + '</span><span class="stat-l">' + acgL(s.l) + '</span></div>';
   }).join('');
+  const pl = document.getElementById('projList');
+  if (pl) {
+    const linkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>';
+    const codeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6L2 12l6 6M16 6l6 6-6 6"/></svg>';
+    const liveLbl = (I18N[currentLang] && I18N[currentLang]['proj.live']) || 'Website';
+    const codeLbl = (I18N[currentLang] && I18N[currentLang]['proj.code']) || 'Code';
+    pl.innerHTML = (ACG.projects||[]).map((p,i) => {
+      let links = '';
+      if (p.live) links += '<a href="' + p.live + '" target="_blank" rel="noopener">' + linkIcon + liveLbl + '</a>';
+      if (p.github) links += '<a href="' + p.github + '" target="_blank" rel="noopener">' + codeIcon + codeLbl + '</a>';
+      return '<div class="project-item">' +
+        '<div class="num">/ ' + String(i+1).padStart(2,'0') + '</div>' +
+        '<h3>' + (p.title||'') + '</h3>' +
+        '<div class="desc">' + acgL(p.desc) + '</div>' +
+        (links ? '<div class="project-links">' + links + '</div>' : '') +
+        (p.status ? '<span class="status">' + acgL(p.status) + '</span>' : '') +
+        '</div>';
+    }).join('');
+  }
 }
 if (ACG) {
   const P = ACG.palette || {};
