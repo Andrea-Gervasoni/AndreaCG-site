@@ -2,7 +2,7 @@
 
 Bilingual (IT/EN) personal portfolio. Static site, no build step, no backend.
 
-**Live:** [ ](#)
+**Live:** [https://andrea-gervasoni.github.io/AndreaCG-site/ ](#)
 
 ## Stack
 
