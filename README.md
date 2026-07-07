@@ -1,8 +1,8 @@
 # Andrea Celeste Gervasoni — Portfolio
 
-Live site: https://andrea-gervasoni.github.io/AndreaCG-site/
-
 Bilingual (IT/EN) personal portfolio. Static site, no build step, no backend.
+
+**Live:** [ ](#)
 
 ## Stack
 
