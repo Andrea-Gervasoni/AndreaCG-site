@@ -162,6 +162,7 @@ select option { background: var(--panel); }
 /* ============ STATE ============ */
 let DATA = JSON.parse(JSON.stringify(window.ACG || window.ACG_DEFAULT));
 if (!DATA.admin) DATA.admin = { pass: 'ACG2026' };
+DATA._v = window.ACG_DEFAULT._v; // ogni salvataggio/esportazione porta la versione corrente dei contenuti
 
 /* ============ GATE ============ */
 (function gate(){
@@ -247,7 +248,6 @@ const PANELS = [
   { id: 'theme', name: 'Tema & colori' },
   { id: 'hero', name: 'Hero / Nome' },
   { id: 'about', name: 'Chi sono' },
-  { id: 'stats', name: 'Statistiche' },
   { id: 'experience', name: 'Esperienze' },
   { id: 'education', name: 'Educazione' },
   { id: 'certifications', name: 'Certificazioni' },
@@ -317,13 +317,7 @@ function renderPanel(id) {
       main.append(textKeyField(['Kicker','Titolo','Paragrafo 1','Paragrafo 2','Citazione','Paragrafo 3'][i], k, i>0));
     });
   }
-  if (id === 'stats') {
-    H('Statistiche', 'I contatori animati in Chi sono');
-    arrayPanel(main, DATA.stats, (card, s) => {
-      card.append(field('Numero / valore', txt(s.n, v => s.n = v, false)));
-      card.append(biField('Etichetta', s, 'l', false));
-    }, () => ({ n: '0', l: { it: '', en: '' } }), 'Aggiungi statistica');
-  }
+
   if (id === 'experience' || id === 'education') {
     H(id === 'experience' ? 'Esperienze' : 'Educazione', 'Box della timeline — aggiungi o rimuovi liberamente');
     arrayPanel(main, DATA[id], (card, it) => {
@@ -389,12 +383,19 @@ function renderPanel(id) {
   }
   if (id === 'projects') {
     H('Progetti', 'Pannello laterale progetti digitali');
-    [['proj.sub','Sottotitolo'],['proj.title','Titolo'],['proj.desc','Descrizione'],
-     ['proj.1.t','Progetto 1 — titolo'],['proj.1.d','Progetto 1 — descrizione'],
-     ['proj.2.t','Progetto 2 — titolo'],['proj.2.d','Progetto 2 — descrizione'],
-     ['proj.3.t','Progetto 3 — titolo'],['proj.3.d','Progetto 3 — descrizione'],
-     ['proj.status','Badge stato']
-    ].forEach(([k, lab]) => main.append(textKeyField(lab, k, k.endsWith('.d') || k === 'proj.desc')));
+    [['proj.sub','Sottotitolo'],['proj.title','Titolo'],['proj.desc','Descrizione intro']
+    ].forEach(([k, lab]) => main.append(textKeyField(lab, k, k === 'proj.desc')));
+    main.append(el('div', {class:'note'}, 'Le card qui sotto sono i progetti effettivi mostrati nel pannello, con link a sito e GitHub.'));
+    if (!DATA.projects) DATA.projects = [];
+    arrayPanel(main, DATA.projects, (card, p) => {
+      card.append(field('Titolo progetto', txt(p.title, v => p.title = v, false)));
+      card.append(biField('Descrizione', p, 'desc', true));
+      const r = el('div', {class:'row'});
+      r.append(field('Link sito', txt(p.live, v => p.live = v, false)));
+      r.append(field('Link GitHub', txt(p.github, v => p.github = v, false)));
+      card.append(r);
+      card.append(biField('Etichetta stato', p, 'status', false));
+    }, () => ({ title:'Nuovo progetto', desc:{it:'',en:''}, live:'', github:'', status:{it:'In aggiornamento',en:'Updating'} }), 'Aggiungi progetto');
   }
   if (id === 'settings') {
     H('Impostazioni', 'Accesso e manutenzione');
