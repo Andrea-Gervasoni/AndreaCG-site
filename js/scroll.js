@@ -39,7 +39,7 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
   const sigState = { played: false };
 
   function cardSize(vw, vh) {
-    if (vw < 860) { const w = Math.min(vw * 0.8, 520); return [w, Math.min(w * 1.12, vh * 0.62)]; }
+    if (vw < 860 || vh < 560) { const w = Math.min(vw * 0.8, 520); return [w, Math.min(w * 1.12, vh * 0.7)]; }
     const w = Math.min(vw * 0.44, 640); return [w, Math.min(w * 0.68, vh * 0.66)];
   }
 

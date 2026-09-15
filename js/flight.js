@@ -128,7 +128,7 @@ export function createFlight({ canvas, section, cards, progressBar }) {
   function resize() {
     const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
     if (w === st.w && h === st.h) return;
-    st.w = w; st.h = h; st.narrow = w < 860;
+    st.w = w; st.h = h; st.narrow = w < 860 || h < 560;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }

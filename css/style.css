@@ -54,7 +54,18 @@ body[data-theme="dark"] {
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+/* html non aveva uno sfondo proprio: nel "rimbalzo" dello scroll su iOS si vedeva
+   per un istante il bianco di default sotto/sopra la pagina, anche in una sezione
+   scura — striscia bianca o nera che compariva e spariva. overscroll-behavior
+   toglie anche il rimbalzo stesso, per un'esperienza più simile a un'app. */
+html {
+  scroll-behavior: auto; -webkit-text-size-adjust: 100%; overflow-x: hidden;
+  background: var(--paper); overscroll-behavior-y: none;
+  transition: background-color .6s var(--ease-out);
+}
+/* --bg su :root cambia solo sul body (attributo su body, non su html): si segue lo
+   stesso stato scuro con :has, così html resta sincronizzato col tema corrente */
+html:has(body[data-theme="dark"]) { background: var(--ink); }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
@@ -68,6 +79,7 @@ body {
   transition: color .6s var(--ease-out), background-color .6s var(--ease-out);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  overscroll-behavior-y: none;
 }
 body.is-locked { overflow: hidden; }
 img, svg, canvas { display: block; max-width: 100%; }
@@ -78,8 +90,13 @@ ul, ol { padding: 0; list-style: none; }
 ::selection { background: var(--accent); color: var(--ink); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
 
-.skip-link { position: fixed; top: 12px; left: 12px; z-index: 200; padding: 10px 14px; background: var(--ink); color: var(--paper); border-radius: 999px; transform: translateY(-200%); transition: transform .3s; }
-.skip-link:focus { transform: none; }
+/* invisibile finché non riceve il focus da tastiera (più difensivo di una sola transform,
+   così resta nascosto anche se un browser non applica subito la trasformazione) */
+.skip-link {
+  position: fixed; top: 12px; left: 12px; z-index: 200; padding: 10px 14px; background: var(--ink); color: var(--paper); border-radius: 999px;
+  transform: translateY(-200%); opacity: 0; pointer-events: none; clip-path: inset(50%); transition: transform .3s, opacity .3s;
+}
+.skip-link:focus { transform: none; opacity: 1; pointer-events: auto; clip-path: none; }
 
 .field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .grain {
@@ -236,11 +253,13 @@ main { position: relative; z-index: 2; }
 .signature .sig-side { stroke: #b8431a; stroke-width: 11; }
 .signature .sig-face { stroke: var(--accent); stroke-width: 11; }
 .signature .sig-hi { stroke: #ffc9ad; stroke-width: 2.4; opacity: .85; }
-.boot-sign .sig-side { stroke: #8a8f9a; stroke-width: 8; }
-.boot-sign .sig-face { stroke: var(--ink); stroke-width: 8; }
-.boot-sign .sig-hi { stroke: #5b6170; stroke-width: 1.6; opacity: .7; }
+/* stessa firma in rilievo dell'hero, arancione, non più grigia e piatta */
+.boot-sign { color: var(--accent); filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .25)); }
+.boot-sign .sig-side { stroke: #b8431a; stroke-width: 8; }
+.boot-sign .sig-face { stroke: var(--accent); stroke-width: 8; }
+.boot-sign .sig-hi { stroke: #ffc9ad; stroke-width: 1.7; opacity: .85; }
 .sig-pen { fill: #ffd9c4; }
-.boot-sign .sig-pen { fill: var(--ink); filter: none; }
+.boot-sign .sig-pen { fill: #ffd9c4; }
 
 /* ---------- 4. Chi sono ---------- */
 .about { padding-top: 12vh; }
@@ -542,7 +561,11 @@ main { position: relative; z-index: 2; }
   .footer-card { grid-template-columns: 1fr 1fr; grid-template-areas: "sign sign" "statement statement" "avatar avatar" "pages follow" "bottom bottom"; }
   .footer-avatar { height: 380px; }
 }
-@media (max-width: 860px) {
+/* mobile per larghezza, ma anche per altezza: un telefono ruotato in orizzontale
+   è largo ma bassissimo, e senza questa seconda condizione riceveva il layout
+   da desktop compresso in una manciata di px di altezza (schede fuori posto,
+   colonne che non ci stanno). */
+@media (max-width: 860px), (max-height: 560px) {
   :root { --topbar-h: 70px; --gutter: 24px; }
   .section { padding-block: clamp(72px, 12vh, 110px); }
   .title { font-size: clamp(3rem, 15cqi, 10.6rem); margin-bottom: 22px; }
@@ -626,6 +649,23 @@ main { position: relative; z-index: 2; }
   .footer-avatar { height: 320px; margin: -20px 0 0; }
   .footer-col { text-align: left; }
   .menu-foot { flex-wrap: wrap; }
+}
+/* telefono ruotato in orizzontale: largo ma bassissimo, la tessera e il resto
+   pensati per un telefono in verticale (844px di altezza) ci stavano a stento */
+@media (max-height: 500px) and (min-width: 560px) {
+  :root { --topbar-h: 56px; }
+  .topbar { padding: 8px var(--gutter); }
+  .lockup { width: 96px; }
+  .lang-toggle, .menu-btn { height: 38px; }
+  .lang-toggle { padding: 3px; } .menu-btn { width: 38px; }
+  .badge { width: 84px; height: 144px; bottom: 8px; }
+  .badge-face { padding: 7px 7px 6px; }
+  .hero-scroll { bottom: 8px; padding: 7px 11px 7px 13px; font-size: 10px; }
+  .menu-list { gap: 2px; }
+  .menu-list a { font-size: clamp(1.4rem, 11vh, 3rem); }
+  .exp-head .title, .edu-head .title { font-size: clamp(2rem, 11vh, 5rem); }
+  .xcard { bottom: 3vh; padding: 14px 18px; }
+  .fan { height: 80vh; }
 }
 @media (hover: none) {
   .skill em { opacity: 1; transform: none; }

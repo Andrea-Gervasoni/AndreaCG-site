@@ -34,7 +34,7 @@ export function createFan(root, { lang = 'it', gsap } = {}) {
   const st = { pos: 0, target: 0, vel: 0, dragging: false, lastX: 0, lastT: 0, idle: 0, hover: false, w: 0 };
   let dragDist = 0;
   const geo = () => {
-    const narrow = root.clientWidth < 860;
+    const narrow = root.clientWidth < 860 || innerHeight < 560;
     const cardW = cards[0]?.offsetWidth || 300;
     const radius = narrow ? Math.max(1400, root.clientWidth * 3.2) : Math.max(2400, root.clientWidth * 2.1);
     /* passo angolare tale che le carte si sovrappongano di circa un quinto */

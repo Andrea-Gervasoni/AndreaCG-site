@@ -40,7 +40,7 @@ function scrollToTarget(hash) {
   if (!hash || hash === '#top') { lenis.scrollTo(0, { duration: 1.4 }); return; }
   const el = document.querySelector(hash); if (!el) return;
   const pinned = ['#experience', '#education'].includes(hash);
-  lenis.scrollTo(el, { offset: pinned ? 0 : -(matchMedia('(max-width: 860px)').matches ? 78 : 12), duration: 1.5 });
+  lenis.scrollTo(el, { offset: pinned ? 0 : -(matchMedia('(max-width: 860px), (max-height: 560px)').matches ? 78 : 12), duration: 1.5 });
 }
 document.addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="#"]'); if (!a || a.hasAttribute('data-menu-link')) return;
@@ -110,6 +110,7 @@ onLanguageChange((lang) => {
   fan?.relabel(lang);
   dialog.refresh();
   scroll.rebindStatement();
+  menu.fit();
 });
 
 /* --- visibilità: rendiamo solo ciò che si vede --- */
@@ -141,7 +142,7 @@ requestAnimationFrame(loop);
 /* --- avvio --- */
 const boot = document.querySelector('[data-boot]');
 const bar = boot?.querySelector('.boot-bar i');
-const bootSign = boot ? createSignature(boot.querySelector('[data-boot-sign]'), { gsap, speed: reduced ? 100000 : 4200, relief: false }) : null;
+const bootSign = boot ? createSignature(boot.querySelector('[data-boot-sign]'), { gsap, speed: reduced ? 100000 : 2200, relief: true }) : null;
 bar?.style.setProperty('--p', 0.15);
 bootSign?.play();
 const started = performance.now();

@@ -58,7 +58,7 @@ function tksCoverTexture() {
   ctx.fillStyle = 'rgba(22,25,35,.9)'; ctx.font = `700 26px ${FONT}`; ctx.textAlign = 'left';
   ctx.fillText('INNOVATOR · 2026 — 2027', 56, 392);
   ctx.fillRect(56, 340, 110, 4);
-  const tex = texOf(c); tex.center.set(0.5, 0.5); tex.rotation = Math.PI;     /* la faccia superiore del box è girata rispetto alla camera */
+  const tex = texOf(c);
   const img = new Image(); img.onload = () => { ctx.save(); ctx.filter = 'brightness(0.1)'; ctx.drawImage(img, 56, 80, 330, 169); ctx.restore(); tex.needsUpdate = true; };
   img.src = 'assets/tks-logo.svg';
   return tex;
@@ -180,7 +180,7 @@ export function createEducation({ canvas }) {
   function resize() {
     const w = Math.max(1, canvas.clientWidth), h = Math.max(1, canvas.clientHeight);
     if (w === st.w && h === st.h) return;
-    st.w = w; st.h = h; st.narrow = w < 560;
+    st.w = w; st.h = h; st.narrow = w < 560 || h < 480;
     renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
 

@@ -1,80 +1,68 @@
 # Andrea Gervasoni — portfolio
-# Online Site:
-https://andrea-gervasoni.github.io/AndreaCG-site/Portfolio.html
 
+Sito statico bilingue (IT/EN), senza build step né framework: HTML, CSS e moduli JavaScript nativi.
+Ispirato alla regia del sito di Lando Norris, riletto in chiave accademica: apertura con un
+Andrea 3D low-poly che segue il cursore, quadro che si chiude e firma che si scrive, libreria dei
+progetti con oggetti 3D, il percorso come volo di un aeroplanino di carta, carosello a ventaglio
+delle foto di San Diego, la formazione come pila di libri che cresce con lo scroll, footer con
+l'avatar che saluta.
 
-Bilingual static website (IT/EN), with no build step or framework: HTML, CSS, and native JavaScript modules.
+## Struttura
 
-Inspired by the art direction of Lando Norris's website, reinterpreted through an academic lens: an opening with a low-poly 3D Andrea that follows the cursor, a frame that closes and a signature that writes itself, a project library with 3D objects, the journey represented as the flight of a paper airplane, a fan-style carousel of San Diego photos, education represented as a stack of books that grows with scrolling, and a footer featuring a waving avatar.
-
-## Structure
-
-```text
-index.html          content and structure (default Italian text, data-i18n keys)
-css/style.css       design system, sections, liquid glass, title effects, responsive
-js/main.js          entry point: language, Lenis, single render loop, initialization
-js/data.js          all IT/EN text, links, photos (single source of truth for content)
-js/i18n.js          language switching (stored), ?lang=it|en forces the language
-js/field.js         background: contour lines + colored region following the cursor (WebGL)
-js/avatar.js        procedural 3D Andrea (Three.js): sculpted head, ribbon hair, wave
-js/brand.js         balanced-width name lockup and self-writing signature
-js/scroll.js        scroll direction: hero closing, light/dark theme, topbar, parallax
-js/flight.js        Experience section: paper airplane, route, illuminating waypoints, cards
-js/carousel.js      San Diego section: fan-style carousel (drag, arrows, keyboard, autoplay)
-js/education.js     Education section: realistic book stack (curved spines, TKS notebook with logo, Cambridge certificate)
-js/objects.js       project 3D objects (scissor-masked grid + detail card)
-js/titles.js        title entrances: particles, scoreboard, stamp, wave, chalk, orbit, morph
-js/menu.js          fullscreen menu
-js/glass.js         liquid glass: cursor-following reflection, SVG refraction where supported
-js/dialog.js        project detail card
+```
+index.html          contenuto e struttura (testo italiano di default, chiavi data-i18n)
+css/style.css       design system, sezioni, vetro liquido, effetti dei titoli, responsive
+js/main.js          punto d'ingresso: lingua, Lenis, ciclo di rendering unico, avvio
+js/data.js          tutti i testi IT/EN, link, foto (unica fonte di verità dei contenuti)
+js/i18n.js          cambio lingua (memorizzato), ?lang=it|en forza la lingua
+js/field.js         sfondo: linee di livello + regione colorata che segue il cursore (WebGL)
+js/avatar.js        Andrea 3D procedurale (Three.js): testa scolpita, capelli a nastri, saluto
+js/brand.js         lockup del nome a larghezza bilanciata e firma che si scrive
+js/scroll.js        regia dello scroll: chiusura della hero, tema chiaro/scuro, topbar, parallasse
+js/flight.js        sezione Esperienze: aeroplanino di carta, rotta, tappe che si accendono, schede
+js/carousel.js      sezione San Diego: carosello a ventaglio (drag, frecce, tastiera, autoplay)
+js/education.js     sezione Formazione: pila di libri veri (dorso curvo, quaderno TKS con logo, certificato Cambridge)
+js/objects.js       oggetti 3D dei progetti (griglia con scissor + scheda di dettaglio)
+js/titles.js        ingressi dei titoli: particelle, tabellone, timbro, onda, gesso, orbita, morph
+js/menu.js          menu a schermo intero
+js/glass.js         vetro liquido: riflesso che segue il cursore, rifrazione SVG dove supportata
+js/dialog.js        scheda di dettaglio di un progetto
 vendor/             three.module.min.js (r170), gsap + ScrollTrigger (3.12.5), lenis (1.1.18)
-assets/             optimized photos (jpg + webp, two sizes), SVG signature, favicon, portrait, TKS logo (The Knowledge Society trademark, used to indicate program participation)
-tests/              integrity checks (node --test) and deterministic screenshots (shot.mjs)
+assets/             foto ottimizzate (jpg + webp, due misure), firma SVG, favicon, ritratto, logo TKS (marchio di The Knowledge Society, usato per indicare la partecipazione al programma)
+tests/              controlli di integrità (node --test) e screenshot deterministici (shot.mjs)
 ```
 
-## Preview
+## Anteprima
 
-Serve the website over HTTP (ES modules and WebGL do not work from `file://`):
+Servire in HTTP (i moduli ES e WebGL non funzionano da `file://`):
 
 ```sh
-node tests/serve.mjs 4180        # or: python3 -m http.server 4180 --bind 127.0.0.1
+node tests/serve.mjs 4180        # oppure: python3 -m http.server 4180 --bind 127.0.0.1
 ```
 
-Then open `http://127.0.0.1:4180/`. The `.claude/launch.json` file starts the same server.
+Poi aprire `http://127.0.0.1:4180/`. Il file `.claude/launch.json` avvia lo stesso server.
 
-## Verification
+## Verifica
 
 ```sh
-node --test tests/site.test.mjs       # integrity: IT/EN keys, anchors, assets, syntax
+node --test tests/site.test.mjs       # integrità: chiavi IT/EN, ancore, asset, sintassi
 node tests/shot.mjs --url http://127.0.0.1:4180/ --w 1440 --h 900 --at 0,700,1400 --out /tmp/shots --gpu true
 ```
 
-`shot.mjs` uses the local Chrome browser through the DevTools Protocol: it navigates the page to precise scroll positions and saves PNG screenshots.
+`shot.mjs` usa il Chrome locale via DevTools Protocol: porta la pagina a posizioni di scroll
+precise e salva PNG. Opzioni: `--mobile true --w 390 --h 844 --dpr 2`, `--lang en`,
+`--reduced true` (prefers-reduced-motion), `--pre "<js>"` per interagire prima dello scatto.
 
-Options:
+## Aggiornare i contenuti
 
-```text
---mobile true --w 390 --h 844 --dpr 2
---lang en
---reduced true
---pre "<js>"
-```
+Tutti i testi stanno in `js/data.js` (IT ed EN hanno le stesse chiavi; il test lo verifica).
+Le foto di San Diego sono in `assets/photos/` e l'elenco con le didascalie in `PHOTOS`.
+Per aggiungere un'esperienza: una scheda `.xcard` in più nell'HTML, una tappa in più in `STOPS`
+dentro `js/flight.js`, le relative chiavi `eN.*` in `data.js`. Per un nuovo titolo di studio: una
+voce `.edu-item` in più, un volume in più in `js/education.js`, le chiavi `edN.*`.
 
-`--mobile` enables a mobile viewport, `--lang` forces the language, `--reduced` emulates `prefers-reduced-motion`, and `--pre` executes JavaScript before taking the screenshot.
+## Note
 
-## Updating Content
-
-All text content lives in `js/data.js` (IT and EN use the same keys; this is verified by the test suite).
-
-San Diego photos are stored in `assets/photos/`, with their captions defined in `PHOTOS`.
-
-To add a new experience: add another `.xcard` to the HTML, add another waypoint to `STOPS` inside `js/flight.js`, and add the corresponding `eN.*` keys to `data.js`.
-
-To add a new qualification: add another `.edu-item`, add another volume in `js/education.js`, and add the corresponding `edN.*` keys.
-
-## Notes
-
-* **Palette:** paper `#f3f1ea`, ink `#161923`, accent `#ff6a2b`.
-* **Fonts:** Mona Sans + Instrument Serif (Google Fonts).
-* **`prefers-reduced-motion`:** no marquee, titles without animation, scrolling without smoothing; 3D remains enabled because it is user-driven.
-* **Runtime dependencies:** no external dependencies at runtime other than fonts; all libraries are bundled locally in `vendor/`.
+- Palette: carta `#f3f1ea`, inchiostro `#161923`, accento `#ff6a2b`. Font: Mona Sans + Instrument Serif (Google Fonts).
+- `prefers-reduced-motion`: niente marquee, titoli senza animazione, scroll senza smoothing; il 3D resta (è guidato dall'utente).
+- Nessuna dipendenza esterna a runtime oltre ai font; le librerie sono in `vendor/`.

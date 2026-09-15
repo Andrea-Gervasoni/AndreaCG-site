@@ -6,6 +6,23 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
   if (!menu || !button || !panel) return { close() {} };
   let open = false, lastFocus = null;
 
+  /* la dimensione in CSS (clamp legato all'altezza) non sa quanto è largo lo schermo:
+     su mobile le voci più lunghe (ESPERIENZE, FORMAZIONE…) uscivano dal bordo.
+     Qui si misura ogni voce e, se non ci sta, si restringe il font finché non entra. */
+  const links = [...menu.querySelectorAll('.menu-list a')];
+  function fitMenu() {
+    links.forEach((a) => {
+      a.style.fontSize = '';
+      const avail = a.clientWidth;
+      const full = a.scrollWidth;
+      if (avail > 0 && full > avail) {
+        const base = parseFloat(getComputedStyle(a).fontSize);
+        a.style.fontSize = (base * (avail / full) * 0.97) + 'px';
+      }
+    });
+  }
+  window.addEventListener('resize', fitMenu);
+
   function setOpen(next) {
     if (next === open) return;
     open = next;
@@ -23,6 +40,7 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
       });
       lockScroll?.();
       document.body.classList.add('is-locked');
+      fitMenu();
       setTimeout(() => menu.querySelector('a')?.focus({ preventScroll: true }), 350);
     } else {
       const r = button.getBoundingClientRect();
@@ -54,5 +72,5 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); button.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); button.focus(); }
   });
-  return { close: () => setOpen(false), isOpen: () => open };
+  return { close: () => setOpen(false), isOpen: () => open, fit: fitMenu };
 }
