@@ -34,8 +34,26 @@ const lenis = new Lenis({ lerp: 0.085, smoothWheel: !reduced, wheelMultiplier: 0
 lenis.on('scroll', ScrollTrigger.update);
 gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
-const lockScroll = () => lenis.stop();
-const unlockScroll = () => lenis.start();
+/* Bloccare lo scroll per un menu/scheda aperti: fermare Lenis e mettere overflow:hidden
+   sul body non basta su iOS Safari, che continua a far scorrere la pagina sotto lo
+   sfondo del pannello (il "click-through" dello scroll che si vedeva nelle schede
+   progetto). Il modo che funziona ovunque: bloccare il body con position:fixed nel
+   punto esatto in cui si trovava, e restituirglielo allo sblocco. */
+let lockedAt = 0, lockCount = 0;
+function lockScroll() {
+  if (lockCount++ > 0) return;
+  lockedAt = window.scrollY || document.documentElement.scrollTop;
+  document.body.style.top = `-${lockedAt}px`;
+  document.body.classList.add('is-locked');
+  lenis.stop();
+}
+function unlockScroll() {
+  if (--lockCount > 0) return;
+  document.body.classList.remove('is-locked');
+  document.body.style.top = '';
+  window.scrollTo(0, lockedAt);
+  lenis.start();
+}
 function scrollToTarget(hash) {
   if (!hash || hash === '#top') { lenis.scrollTo(0, { duration: 1.4 }); return; }
   const el = document.querySelector(hash); if (!el) return;

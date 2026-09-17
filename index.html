@@ -14,6 +14,15 @@
   <link rel="canonical" href="https://andrea-gervasoni.github.io/AndreaCG-site/">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <!-- "Aggiungi alla schermata Home": l'unico modo per avere davvero zero barre del
+       browser su iOS — in una scheda Safari normale la barra di sistema resta sempre,
+       qui sotto la si rende solo il più possibile invisibile (sfondo che combacia). -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Andrea Gervasoni">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wdth,wght@0,75..125,200..900;1,75..125,200..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -206,15 +215,20 @@
     <!-- Scheda progetto (dialog) -->
     <div class="pdialog" data-pdialog role="dialog" aria-modal="true" aria-labelledby="pdialog-title" hidden>
       <div class="pdialog-backdrop" data-pdialog-close></div>
-      <div class="pdialog-panel glass-heavy" data-lenis-prevent>
+      <div class="pdialog-panel glass-heavy">
         <button class="pdialog-close glass" type="button" data-pdialog-close aria-label="Chiudi" data-i18n-aria="projects.close">×</button>
-        <div class="pdialog-obj" data-pdialog-obj><small data-i18n="projects.drag">Trascina per ruotare</small></div>
-        <div class="pdialog-body">
-          <p class="kicker" data-pd="tag"></p>
-          <h3 id="pdialog-title" data-pd="name"></h3>
-          <p class="pdialog-deck" data-pd="deck"></p>
-          <dl class="pdialog-facts" data-pd="facts"></dl>
-          <div class="pdialog-links" data-pd="links"></div>
+        <!-- lo scroll vive qui, separato dal pannello arrotondato/sfocato: su iOS lo
+             scroll dentro un elemento con border-radius + backdrop-filter lasciava
+             un segno (il bordo arrotondato non si ridisegnava bene durante lo scroll) -->
+        <div class="pdialog-scroll" data-lenis-prevent>
+          <div class="pdialog-obj" data-pdialog-obj><small data-i18n="projects.drag">Trascina per ruotare</small></div>
+          <div class="pdialog-body">
+            <p class="kicker" data-pd="tag"></p>
+            <h3 id="pdialog-title" data-pd="name"></h3>
+            <p class="pdialog-deck" data-pd="deck"></p>
+            <dl class="pdialog-facts" data-pd="facts"></dl>
+            <div class="pdialog-links" data-pd="links"></div>
+          </div>
         </div>
       </div>
     </div>

@@ -61,7 +61,6 @@ body[data-theme="dark"] {
 html {
   scroll-behavior: auto; -webkit-text-size-adjust: 100%; overflow-x: hidden;
   background: var(--paper); overscroll-behavior-y: none; color-scheme: light;
-  transition: background-color .25s linear;
 }
 /* --bg su :root cambia solo sul body (attributo su body, non su html): si segue lo
    stesso stato scuro con :has, così html e la cromatura del browser (barra
@@ -77,12 +76,15 @@ body {
   line-height: 1.5;
   color: var(--fg);
   background: var(--bg);
-  transition: color .3s var(--ease-out), background-color .25s linear;
+  transition: color .3s var(--ease-out);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   overscroll-behavior-y: none;
 }
-body.is-locked { overflow: hidden; }
+/* position:fixed, non solo overflow:hidden: su iOS Safari altrimenti la pagina
+   dietro un menu/scheda aperti continua a scorrere (il "top" negativo è impostato
+   dal JS che blocca lo scroll, per restare visivamente nello stesso punto) */
+body.is-locked { position: fixed; left: 0; right: 0; overflow: hidden; }
 /* barra di scorrimento sottile e discreta: quella di sistema, larga e grigia,
    sembra una cornice attorno al sito invece di farne parte */
 html { scrollbar-width: thin; scrollbar-color: rgba(22, 25, 35, .28) transparent; }
@@ -168,6 +170,9 @@ main { position: relative; z-index: 2; }
 }
 .topbar > * { pointer-events: auto; }
 .topbar.is-hidden { transform: translateY(-110%); }
+/* con una scheda di progetto aperta il nome, il menu e la lingua sono superflui
+   (la scheda ha già la sua X per chiudere): si tolgono, resta più pulito */
+html.has-dialog .topbar { opacity: 0; visibility: hidden; transition: opacity .3s, visibility .3s; }
 .topbar[data-on-dark="true"] { --fg: var(--paper); --glass-bg: rgba(30, 34, 46, .4); --glass-line: rgba(255, 255, 255, .22); color: var(--paper); }
 .lockup { display: block; width: 164px; color: inherit; }
 .lockup-svg { width: 100%; height: auto; overflow: visible; }
@@ -334,13 +339,15 @@ main { position: relative; z-index: 2; }
 .pdialog-backdrop { position: absolute; inset: 0; background: rgba(10, 12, 18, .55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0; transition: opacity .4s; }
 .pdialog.is-open .pdialog-backdrop { opacity: 1; }
 .pdialog-panel {
-  position: relative; width: min(1120px, 100%); max-height: min(88vh, 820px); overflow: auto;
-  display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px;
+  position: relative; width: min(1120px, 100%); max-height: min(88vh, 820px); overflow: hidden; border-radius: 28px;
   color: var(--paper); --fg: var(--paper); --fg-muted: rgba(243, 241, 234, .66); --line: rgba(243, 241, 234, .14); --accent-text: var(--accent);
   --glass-bg: rgba(22, 25, 35, .72); --glass-line: rgba(255, 255, 255, .18);
   transform: translateY(30px) scale(.97); opacity: 0; transition: transform .6s var(--ease-out), opacity .4s;
 }
 .pdialog.is-open .pdialog-panel { transform: none; opacity: 1; }
+/* lo scroll vero e proprio: niente border-radius/backdrop-filter qui, solo overflow —
+   così il bordo arrotondato del pannello (sopra) resta sempre nitido durante lo scroll */
+.pdialog-scroll { display: grid; grid-template-columns: 1fr 1fr; max-height: inherit; overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .pdialog-close { position: absolute; right: 14px; top: 14px; width: 42px; height: 42px; border-radius: 50%; font-size: 24px; line-height: 1; z-index: 2; display: grid; place-items: center; }
 .pdialog-obj { position: relative; min-height: 380px; cursor: grab; touch-action: pan-y; border-right: 1px solid var(--line); }
 .pdialog-obj small { position: absolute; left: 20px; bottom: 16px; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-muted); }
@@ -632,7 +639,8 @@ main { position: relative; z-index: 2; }
   .projects-head .lead { text-align: left; }
   .projects-grid { grid-template-columns: 1fr; }
   .pcard { min-height: 460px; }
-  .pdialog-panel { grid-template-columns: 1fr; max-height: 92vh; }
+  .pdialog-panel { max-height: 92vh; }
+  .pdialog-scroll { grid-template-columns: 1fr; }
   .pdialog-obj { min-height: 280px; border-right: 0; border-bottom: 1px solid var(--line); }
   /* Esperienze: il volo resta, le schede si ancorano in basso */
   .experience { height: 460vh; }

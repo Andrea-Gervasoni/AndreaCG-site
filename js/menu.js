@@ -10,10 +10,14 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
      su mobile le voci più lunghe (ESPERIENZE, FORMAZIONE…) uscivano dal bordo.
      Qui si misura ogni voce e, se non ci sta, si restringe il font finché non entra. */
   const links = [...menu.querySelectorAll('.menu-list a')];
+  /* la voce si sposta di qualche px al passaggio/tocco (:hover): si toglie quel margine
+     dallo spazio disponibile PRIMA di calcolare la dimensione, altrimenti una voce
+     lunga già al limite usciva dal bordo (tagliata) proprio mentre si accende d'arancio */
+  const HOVER_SHIFT = 10;
   function fitMenu() {
     links.forEach((a) => {
       a.style.fontSize = '';
-      const avail = a.clientWidth;
+      const avail = a.clientWidth - HOVER_SHIFT;
       const full = a.scrollWidth;
       if (avail > 0 && full > avail) {
         const base = parseFloat(getComputedStyle(a).fontSize);
@@ -39,7 +43,6 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
         menu.classList.add('is-open');
       });
       lockScroll?.();
-      document.body.classList.add('is-locked');
       fitMenu();
       setTimeout(() => menu.querySelector('a')?.focus({ preventScroll: true }), 350);
     } else {
@@ -49,7 +52,6 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
       menu.classList.remove('is-open');
       setTimeout(() => { if (!open) menu.hidden = true; }, 620);
       unlockScroll?.();
-      document.body.classList.remove('is-locked');
       lastFocus?.focus?.({ preventScroll: true });
     }
   }

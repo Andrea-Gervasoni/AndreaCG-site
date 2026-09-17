@@ -36,7 +36,8 @@ export function initProjectDialog({ objects, lockScroll, unlockScroll }) {
     root.hidden = false;
     requestAnimationFrame(() => root.classList.add('is-open'));
     objects?.mountDialog(name, objSlot);
-    lockScroll?.(); document.body.classList.add('is-locked');
+    document.documentElement.classList.add('has-dialog');
+    lockScroll?.();
     setTimeout(() => root.querySelector('[data-pdialog-close]')?.focus({ preventScroll: true }), 50);
   }
   function close() {
@@ -44,8 +45,9 @@ export function initProjectDialog({ objects, lockScroll, unlockScroll }) {
     current = null;
     root.classList.remove('is-open');
     objects?.unmountDialog();
+    document.documentElement.classList.remove('has-dialog');
     setTimeout(() => { if (!current) root.hidden = true; }, 420);
-    unlockScroll?.(); document.body.classList.remove('is-locked');
+    unlockScroll?.();
     lastFocus?.focus?.({ preventScroll: true });
   }
 
