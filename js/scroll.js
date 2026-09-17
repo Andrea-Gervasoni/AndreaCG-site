@@ -90,7 +90,9 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
     if (dark !== state.bodyDark) setTheme(dark);
     field?.setTheme(inHero ? state.heroP > 0.02 : dark);
   }
-  ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: (self) => updateHero(self.progress), onRefresh: (self) => updateHero(self.progress) });
+  /* scrub con un piccolo ritardo (invece di 1:1 con la rotella): chi scorre veloce
+     non salta la firma, l'animazione la insegue e recupera in una frazione di secondo */
+  ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom bottom', scrub: 0.45, onUpdate: (self) => updateHero(self.progress), onRefresh: (self) => updateHero(self.progress) });
   updateHero(0);
   lenis.on('scroll', resolveTheme);
   ScrollTrigger.addEventListener('refresh', resolveTheme);
@@ -119,12 +121,12 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
   /* ---------- Esperienze: lo scroll guida il volo ---------- */
   const exp = document.querySelector('[data-experience]');
   if (exp && flight) {
-    ScrollTrigger.create({ trigger: exp, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: (self) => flight.setProgress(self.progress), onRefresh: (self) => flight.setProgress(self.progress) });
+    ScrollTrigger.create({ trigger: exp, start: 'top top', end: 'bottom bottom', scrub: 0.5, onUpdate: (self) => flight.setProgress(self.progress), onRefresh: (self) => flight.setProgress(self.progress) });
   }
   /* ---------- Formazione: la pila cresce con lo scroll, su ogni schermo (la scena è pinnata) ---------- */
   const edu = document.querySelector('[data-education]');
   if (edu && education) {
-    ScrollTrigger.create({ trigger: edu, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: (self) => education.setProgress(self.progress), onRefresh: (self) => education.setProgress(self.progress) });
+    ScrollTrigger.create({ trigger: edu, start: 'top top', end: 'bottom bottom', scrub: 0.6, onUpdate: (self) => education.setProgress(self.progress), onRefresh: (self) => education.setProgress(self.progress) });
   }
 
   /* ---------- Ingressi semplici ---------- */

@@ -7,7 +7,7 @@
    continuano attraverso il bordo.
    ------------------------------------------------------------------ */
 
-const TRAIL = 9;
+const TRAIL = 5;   /* scia più corta: il vecchio effetto a cometa sembrava datato */
 const VERT = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }`;
 
 const FRAG = `
@@ -65,7 +65,9 @@ void main(){
     float r = max(u_trailR[i], 1.0);
     field += exp(-dot(d, d) / (r * r));
   }
-  float region = smoothstep(0.30, 0.36, field) * u_cursorOn;
+  /* bordo molto più morbido (prima era quasi netto, sembrava una macchia/cometa) e
+     intensità limitata: una tinta appena percepibile, non una macchia piena */
+  float region = smoothstep(0.05, 0.7, field) * u_cursorOn * 0.62;
 
   /* dentro/fuori dal quadro chiaro */
   vec2 c = u_rect.xy + u_rect.zw * 0.5;
@@ -161,8 +163,9 @@ export function createField(canvas) {
     state.time += dt;
     /* la testa della scia è una molla: arriva con un piccolo rimbalzo */
     const h = state.head, m = state.mouse;
-    h.vx += (m.tx - h.x) * 38 * dt; h.vy += (m.ty - h.y) * 38 * dt;
-    const damp = Math.exp(-dt * 7.5); h.vx *= damp; h.vy *= damp;
+    /* meno elastica di prima (rimbalzava): segue con un filo di inerzia, non con una molla che sbalza */
+    h.vx += (m.tx - h.x) * 24 * dt; h.vy += (m.ty - h.y) * 24 * dt;
+    const damp = Math.exp(-dt * 11); h.vx *= damp; h.vy *= damp;
     h.x += h.vx * dt; h.y += h.vy * dt;
     /* le gocce successive inseguono la precedente con ritardo crescente */
     let px = h.x, py = h.y;
@@ -170,7 +173,7 @@ export function createField(canvas) {
       const p = state.trail[i], k = 1 - Math.exp(-dt * (14 - i * 1.1));
       p.x += (px - p.x) * k; p.y += (py - p.y) * k; px = p.x; py = p.y;
       trailBuf[i * 2] = p.x * state.dpr; trailBuf[i * 2 + 1] = p.y * state.dpr;
-      const base = Math.min(state.cw, state.ch) * 0.13;
+      const base = Math.min(state.cw, state.ch) * 0.105;
       radiusBuf[i] = base * (1 - i / TRAIL * 0.72) * state.dpr;
     }
     m.on += (m.ton - m.on) * (1 - Math.exp(-dt * 3));

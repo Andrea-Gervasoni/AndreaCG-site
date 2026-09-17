@@ -206,13 +206,22 @@ export function createEducation({ canvas }) {
     const targetRot = -0.42 + p * 0.3 + st.px * 0.14;
     st.rot += (targetRot - st.rot) * (1 - Math.exp(-dt * 4));
     root.rotation.y = st.rot;
-    /* inquadratura: tutta la pila, compresa la base */
+    /* inquadratura: la pila gira sul proprio asse, quindi da qualunque lato la si guardi
+       resta dentro un cilindro di raggio R attorno all'asse; basta che la camera inquadri
+       quel cilindro (in larghezza) e l'altezza della pila (in verticale) — non si taglia
+       mai, a qualunque proporzione dello schermo. Un piccolo scarto verso destra lascia
+       spazio al testo senza spingere la pila fuori dal fotogramma. */
     const aspect = st.w / st.h;
-    const need = Math.max(2.4, 2.9 / Math.min(1.2, aspect)) * (st.narrow ? 0.98 : 1);   /* altezza visibile necessaria */
-    const dist = need / (2 * Math.tan(camera.fov * Math.PI / 360));
+    const fovV = camera.fov * Math.PI / 180;
+    const fovH = 2 * Math.atan(Math.tan(fovV / 2) * aspect);
+    const R = 1.95, halfH = 1.05;
+    const distV = (halfH / Math.tan(fovV / 2)) * 1.1;
+    const distH = (R / Math.tan(fovH / 2)) * 1.12;
+    const dist = Math.max(distV, distH, 3.3);
     const cy = 0.55 + 0.25 * st.py;
-    camera.position.set(0.45, cy + dist * 0.42, dist * 0.92);
-    camera.lookAt(st.narrow ? 0.2 : 0.3, 0.55, 0);
+    const lookX = 0.12;                                            /* prima era 0.3 (0.2 da mobile): spingeva la pila a sinistra */
+    camera.position.set(lookX + 0.12, cy + dist * 0.42, dist * 0.92);
+    camera.lookAt(lookX, 0.55, 0);
     renderer.render(scene, camera);
     if (current !== st.built) { st.built = current; onStep?.(current); }
   }

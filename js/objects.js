@@ -101,8 +101,9 @@ function buildOrizzonte() {
   /* assi e traguardo */
   const axis = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.012, 0.012), std(MUTED)); axis.position.set(0, -0.62, 0); g.add(axis);
   const today = new THREE.Mesh(new THREE.BoxGeometry(0.012, 1.9, 0.012), std(MUTED)); today.position.set(-1.45, 0.2, 0); g.add(today);
-  const goal = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.012, 8, 32), std(PAPER)); goal.position.set(1.52, 0.8, 0); g.add(goal);
-  const goalDot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), std(ACCENT, { emissive: ACCENT, emissiveIntensity: .5 })); goalDot.position.copy(goal.position); g.add(goalDot);
+  /* il traguardo è solo il pallino arancione che pulsa: l'anello bianco intorno sembrava
+     una lucina estranea alla palette, sul fondo scuro della scheda */
+  const goalDot = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), std(ACCENT, { emissive: ACCENT, emissiveIntensity: .5 })); goalDot.position.set(1.52, 0.8, 0); g.add(goalDot);
   const CYCLE = 7;
   g.userData.update = (t) => {
     const p = (t % CYCLE) / CYCLE;
@@ -191,23 +192,41 @@ export function createProjectObjects({ canvas, grid, slots }) {
     const obj = BUILDERS[name] ? BUILDERS[name]() : new THREE.Group();
     const pivot = new THREE.Group(); pivot.add(obj); scene.add(pivot);
     const it = { name, slot, scene, obj, pivot, key, rot: { x: 0, y: 0, tx: 0, ty: 0, vx: 0, vy: 0 }, hover: 0, tHover: 0, drag: null, auto: 0 };
-    bindPointer(() => it, slot);
+    bindPointer(() => it, slot, { touchDrag: false });
     return it;
   });
   const byName = Object.fromEntries(items.map((i) => [i.name, i]));
 
-  function bindPointer(get, el) {
+  /* touchDrag: false nella griglia — su un tocco, distinguere "voglio ruotare" da "voglio
+     scorrere" è troppo fragile (varia da motore a motore); col dito si scorre e basta, si
+     ruota con il mouse o nella scheda a schermo intero, che non è dentro una pagina che scorre. */
+  function bindPointer(get, el, { touchDrag = true } = {}) {
     el.addEventListener('pointerenter', () => { const it = get(); if (it) it.tHover = 1; });
     el.addEventListener('pointerleave', () => { const it = get(); if (!it) return; it.tHover = 0; it.rot.tx = 0; it.rot.ty = 0; });
     el.addEventListener('pointermove', (e) => {
       const it = get(); if (!it) return;
+      if (e.pointerType === 'touch' && !touchDrag) return;
+      /* col dito (dove è permesso), il primo tocco non trascina subito: si aspetta di
+         capire se il gesto è orizzontale (ruota l'oggetto) o verticale (si vuole scorrere
+         la pagina, e allora non si cattura nulla). */
+      if (it.pending && !it.drag) {
+        const dx = e.clientX - it.pending.x, dy = e.clientY - it.pending.y;
+        if (Math.hypot(dx, dy) > 8) {
+          if (Math.abs(dx) > Math.abs(dy)) { it.drag = { x: e.clientX, y: e.clientY }; it.rot.vx = it.rot.vy = 0; el.setPointerCapture?.(e.pointerId); }
+          it.pending = null;
+        }
+      }
       const r = el.getBoundingClientRect();
       const nx = ((e.clientX - r.left) / r.width) * 2 - 1, ny = ((e.clientY - r.top) / r.height) * 2 - 1;
       if (it.drag) { it.rot.vy = (e.clientX - it.drag.x) * 0.012; it.rot.vx = (e.clientY - it.drag.y) * 0.012; it.rot.y += it.rot.vy; it.rot.x += it.rot.vx; it.drag = { x: e.clientX, y: e.clientY }; }
-      else { it.rot.ty = nx * 0.45; it.rot.tx = ny * 0.3; }
+      else if (!it.pending) { it.rot.ty = nx * 0.45; it.rot.tx = ny * 0.3; }
     });
-    el.addEventListener('pointerdown', (e) => { const it = get(); if (!it) return; it.drag = { x: e.clientX, y: e.clientY }; it.rot.vx = it.rot.vy = 0; el.setPointerCapture?.(e.pointerId); });
-    const end = () => { const it = get(); if (it) it.drag = null; };
+    el.addEventListener('pointerdown', (e) => {
+      const it = get(); if (!it) return;
+      if (e.pointerType === 'touch') { if (touchDrag) it.pending = { x: e.clientX, y: e.clientY }; return; }
+      it.drag = { x: e.clientX, y: e.clientY }; it.rot.vx = it.rot.vy = 0; el.setPointerCapture?.(e.pointerId);
+    });
+    const end = () => { const it = get(); if (it) { it.drag = null; it.pending = null; } };
     el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
   }
 
@@ -253,7 +272,10 @@ export function createProjectObjects({ canvas, grid, slots }) {
       const r = new THREE.WebGLRenderer({ canvas: c, alpha: true, antialias: true }); r.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); r.setClearColor(0, 0);
       const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 40); cam.position.set(0, 0.3, 5.6); cam.lookAt(0, 0, 0);
       dialog = { renderer: r, canvas: c, camera: cam, item: null, container, w: 0, h: 0 };
-      bindPointer(() => dialog.item, container);
+      /* anche nella scheda a schermo intero: da mobile l'oggetto e il testo sono impilati
+         in un unico pannello che scorre (overflow: auto) — stesso motivo della griglia,
+         un tocco deve poter scorrere quel pannello invece di restare sull'oggetto */
+      bindPointer(() => dialog.item, container, { touchDrag: false });
     }
     dialog.item = it;
   }

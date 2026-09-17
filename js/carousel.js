@@ -69,15 +69,27 @@ export function createFan(root, { lang = 'it', gsap } = {}) {
   next?.addEventListener('click', () => goTo(Math.round(st.target) + 1));
   root.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(Math.round(st.target) - 1); } if (e.key === 'ArrowRight') { e.preventDefault(); goTo(Math.round(st.target) + 1); } });
 
-  /* trascinamento */
-  stage.addEventListener('pointerdown', (e) => { st.dragging = true; st.lastX = e.clientX; st.lastT = performance.now(); dragDist = 0; st.vel = 0; stage.setPointerCapture?.(e.pointerId); stage.classList.add('is-dragging'); });
+  /* trascinamento: col dito non si cattura subito — un tocco verticale deve poter scorrere
+     la pagina, non restare intrappolato nel ventaglio in attesa di un trascinamento orizzontale */
+  let pending = null;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') { pending = { x: e.clientX, y: e.clientY }; return; }
+    st.dragging = true; st.lastX = e.clientX; st.lastT = performance.now(); dragDist = 0; st.vel = 0; stage.setPointerCapture?.(e.pointerId); stage.classList.add('is-dragging');
+  });
   stage.addEventListener('pointermove', (e) => {
+    if (pending && !st.dragging) {
+      const dx = e.clientX - pending.x, dy = e.clientY - pending.y;
+      if (Math.hypot(dx, dy) > 8) {
+        if (Math.abs(dx) > Math.abs(dy)) { st.dragging = true; st.lastX = e.clientX; st.lastT = performance.now(); dragDist = 0; st.vel = 0; stage.setPointerCapture?.(e.pointerId); stage.classList.add('is-dragging'); }
+        pending = null;
+      }
+    }
     if (!st.dragging) return;
     const dx = e.clientX - st.lastX, now = performance.now(), dt = Math.max(1, now - st.lastT);
     const per = Math.max(120, root.clientWidth * 0.18);   /* px per carta */
     st.pos -= dx / per; st.target = st.pos; st.vel = -(dx / per) / dt * 1000; st.lastX = e.clientX; st.lastT = now; dragDist += Math.abs(dx); st.idle = 0;
   });
-  const endDrag = () => { if (!st.dragging) return; st.dragging = false; stage.classList.remove('is-dragging'); st.target = Math.round(st.pos + st.vel * 0.12); };
+  const endDrag = () => { pending = null; if (!st.dragging) return; st.dragging = false; stage.classList.remove('is-dragging'); st.target = Math.round(st.pos + st.vel * 0.12); };
   stage.addEventListener('pointerup', endDrag); stage.addEventListener('pointercancel', endDrag); stage.addEventListener('lostpointercapture', endDrag);
   /* rotella orizzontale (trackpad) */
   let wheelAcc = 0;

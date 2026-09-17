@@ -199,12 +199,26 @@ function play(el) {
 export function initTitles() {
   const titles = [...document.querySelectorAll('.title[data-title]')];
   titles.forEach(prepare);
+  /* soglia bassa e nessun margine negativo: una sezione corta (es. Contatti, appena
+     prima del footer) può attraversare la sua "finestra" di visibilità in un solo
+     scatto di rotellina — con una soglia più alta capitava di scorrere oltre senza
+     che il titolo si mostrasse mai. */
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (e.isIntersecting && !played.has(e.target)) { play(e.target); io.unobserve(e.target); }
     }
-  }, { threshold: 0.3, rootMargin: '0px 0px -8% 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px -2% 0px' });
   titles.forEach((t) => io.observe(t));
+  /* rete di sicurezza: una sezione corta scavalcata da uno scroll molto rapido può
+     restare invisibile per tutto il fotogramma in cui l'osservatore avrebbe dovuto
+     accorgersene. Se un titolo finisce sopra lo schermo senza essere mai comparso,
+     lo si mostra comunque invece di lasciarlo bianco per sempre. */
+  addEventListener('scroll', () => {
+    for (const t of titles) {
+      if (played.has(t)) continue;
+      if (t.getBoundingClientRect().bottom < 0) { play(t); io.unobserve(t); }
+    }
+  }, { passive: true });
 
   /* al cambio lingua: ritaglia di nuovo; se già visto, mostra subito lo stato finale (o rigioca se in vista) */
   return {
