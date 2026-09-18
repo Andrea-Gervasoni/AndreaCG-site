@@ -20,11 +20,22 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
   const state = { bodyDark: false, overDark: 0, heroP: 0 };
 
   function applyTopbar() { topbar.dataset.onDark = String(state.bodyDark || state.overDark > 0 || (state.heroP > 0.1 && state.heroP < 1)); }
+  /* Safari spesso non ridipinge la sua barra se il meta theme-color viene solo
+     mutato (setAttribute): resta fermo al colore precedente finché non succede
+     altro (cambio tab, refresh...). Sostituire il tag di sana pianta, invece di
+     modificarlo, è il modo che WebKit nota in modo affidabile. */
+  function setThemeColor(hex) {
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    meta.setAttribute('content', hex);
+    document.head.appendChild(meta);
+  }
   function setTheme(dark) {
     state.bodyDark = dark;
     body.dataset.theme = dark ? 'dark' : 'light';
     field?.setTheme(dark);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#161923' : '#f3f1ea');
+    setThemeColor(dark ? '#161923' : '#f3f1ea');
     applyTopbar();
   }
 
