@@ -169,10 +169,32 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
   }
 
   /* ---------- Magnetico ---------- */
-  document.querySelectorAll('[data-magnetic]').forEach((el) => {
-    el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2); el.style.transform = `translate(${dx * 0.22}px, ${dy * 0.22}px)`; });
-    el.addEventListener('pointerleave', () => { el.style.transform = ''; });
-  });
+  /* molla morbida (quickTo) invece di un 1:1 col cursore: arriva e si assesta come
+     un oggetto con un po' di massa, non scatta né rimbalza. Solo con un puntatore
+     preciso (niente touch) e mai con reduced-motion. */
+  if (matchMedia('(pointer: fine)').matches && !reduced) {
+    document.querySelectorAll('[data-magnetic]').forEach((el) => {
+      const pull = Number(el.dataset.magnetic) || 0.24;
+      const xTo = gsap.quickTo(el, 'x', { duration: .5, ease: 'power3.out' });
+      const yTo = gsap.quickTo(el, 'y', { duration: .5, ease: 'power3.out' });
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        xTo((e.clientX - (r.left + r.width / 2)) * pull);
+        yTo((e.clientY - (r.top + r.height / 2)) * pull);
+      });
+      el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+    });
+  }
+
+  /* ---------- Ritratto: si apre come il quadro della hero, in miniatura ---------- */
+  const portrait = document.querySelector('[data-photo-reveal] img');
+  if (portrait && !reduced) {
+    gsap.set(portrait, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.12, transformOrigin: '50% 100%' });
+    ScrollTrigger.create({
+      trigger: portrait, start: 'top 85%', once: true,
+      onEnter: () => gsap.to(portrait, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1.3, ease: 'power4.out' })
+    });
+  }
 
   return {
     setTheme,

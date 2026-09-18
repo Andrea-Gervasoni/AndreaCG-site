@@ -61,6 +61,7 @@ body[data-theme="dark"] {
 html {
   scroll-behavior: auto; -webkit-text-size-adjust: 100%; overflow-x: hidden;
   background: var(--paper); overscroll-behavior-y: none; color-scheme: light;
+  min-height: 100%;
 }
 /* --bg su :root cambia solo sul body (attributo su body, non su html): si segue lo
    stesso stato scuro con :has, così html e la cromatura del browser (barra
@@ -80,6 +81,7 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
   overscroll-behavior-y: none;
+  min-height: 100%;
 }
 /* position:fixed, non solo overflow:hidden: su iOS Safari altrimenti la pagina
    dietro un menu/scheda aperti continua a scorrere (il "top" negativo è impostato
@@ -322,6 +324,14 @@ html.has-dialog .topbar { opacity: 0; visibility: hidden; transition: opacity .3
 .pcard::after { right: 12px; bottom: 12px; border-left: 0; border-top: 0; border-radius: 0 0 4px 0; }
 .pcard:hover { border-color: rgba(255, 106, 43, .55); background: linear-gradient(180deg, rgba(255, 106, 43, .07), rgba(255, 255, 255, 0)); }
 .pcard:hover::before, .pcard:hover::after { border-color: var(--accent); }
+/* alone che segue il cursore, sotto l'oggetto 3D: stessa idea del riflesso del badge,
+   qui per dare peso e profondità alla scheda invece che ripetere un effetto identico */
+.pcard-glow {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+  background: radial-gradient(360px 260px at var(--mx, 50%) var(--my, 45%), rgba(255, 106, 43, .16), transparent 68%);
+  transition: opacity .5s var(--ease-out);
+}
+.pcard:hover .pcard-glow { opacity: 1; }
 .pcard-obj { position: relative; min-height: 320px; cursor: grab; touch-action: pan-y; z-index: 3; }
 .pcard-obj:active { cursor: grabbing; }
 .pcard-meta { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; align-items: baseline; margin-top: 12px; }
@@ -532,7 +542,8 @@ html.has-dialog .topbar { opacity: 0; visibility: hidden; transition: opacity .3
    diventa un alone bianco isolato che si sposta col cursore invece di un riflesso —
    sulle superfici grandi si tiene solo la sfocatura e il bordo, non lo spot. */
 .menu-panel.glass-heavy::before, .pdialog-panel.glass-heavy::before { content: none; }
-.glass.is-pressed { transform: scale(.96); }
+/* la pressione deve sentirsi subito: il .5s del hover-lift sarebbe pigro al tocco */
+.glass.is-pressed { transform: scale(.96); transition-duration: .15s; }
 /* Rifrazione reale del bordo dove il browser lo consente (Chromium) */
 .has-refraction .glass { -webkit-backdrop-filter: url(#liquid-lens) blur(14px) saturate(1.7); backdrop-filter: url(#liquid-lens) blur(14px) saturate(1.7); }
 

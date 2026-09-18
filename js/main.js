@@ -18,7 +18,16 @@ import { createEducation } from './education.js';
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
+/* iOS Safari: la barra degli indirizzi che si nasconde/riappare allo scroll cambia
+   l'altezza della viewport. Senza questo, ScrollTrigger tratta ogni cambio come un
+   resize vero e ricalcola gli spazi dei pin (hero, esperienze, formazione) — per
+   una frazione di secondo lo spazio ricalcolato non combacia col contenuto e si
+   vede uno strato bianco sotto. Le sezioni pinnate usano già 100svh (stabile, non
+   dipende dal chrome del browser): dire a ScrollTrigger di ignorare questi resize
+   "piccoli" tipici da mobile chiude il problema alla fonte, non lo maschera. */
+ScrollTrigger.config({ ignoreMobileResize: true });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pointerFine = matchMedia('(pointer: fine)').matches;
 history.scrollRestoration = 'manual';
 
 /* --- lingua (?lang=en forza la lingua, utile per i test) --- */
@@ -109,6 +118,26 @@ if (badge) {
     badge.style.setProperty('--mx', `${(nx + 0.5) * 100}%`); badge.style.setProperty('--my', `${(ny + 0.5) * 100}%`);
   });
   badge.addEventListener('pointerleave', () => { badge.style.setProperty('--ry', '0deg'); badge.style.setProperty('--rx', '0deg'); });
+}
+
+/* --- schede progetti: lieve sollevamento + alone che segue il cursore, come il badge.
+   Niente tilt 3D via CSS: la scheda ha già un vero oggetto 3D dentro (ridondante),
+   e un perspective/preserve-3d qui sopra ha creato un artefatto di compositing
+   con i pannelli in vetro (backdrop-filter) della topbar durante i test — lo stesso
+   tipo di bug che Safari/iOS mostra spesso mescolando le due cose. Restano solo
+   trasformazioni 2D, prive di quel rischio. */
+if (grid && pointerFine && !reduced) {
+  grid.querySelectorAll('.pcard').forEach((card) => {
+    const liftTo = gsap.quickTo(card, 'y', { duration: .6, ease: 'power3.out' });
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
+      liftTo(-4);
+      card.style.setProperty('--mx', `${nx * 100}%`);
+      card.style.setProperty('--my', `${ny * 100}%`);
+    });
+    card.addEventListener('pointerleave', () => liftTo(0));
+  });
 }
 
 /* --- moduli UI --- */
