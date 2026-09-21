@@ -1,5 +1,7 @@
 # Andrea Gervasoni — portfolio
 
+link: https://andrea-gervasoni.github.io/AndreaCG-site/
+
 Sito statico bilingue (IT/EN), senza build step né framework: HTML, CSS e moduli JavaScript nativi.
 Ispirato alla regia del sito di Lando Norris, riletto in chiave accademica: apertura con un
 Andrea 3D low-poly che segue il cursore, quadro che si chiude e firma che si scrive, libreria dei
