@@ -6,26 +6,31 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
   if (!menu || !button || !panel) return { close() {} };
   let open = false, lastFocus = null;
 
-  /* la dimensione in CSS (clamp legato all'altezza) non sa quanto è largo lo schermo:
-     su mobile le voci più lunghe (ESPERIENZE, FORMAZIONE…) uscivano dal bordo.
-     Qui si misura ogni voce e, se non ci sta, si restringe il font finché non entra. */
+  /* Tutte le voci alla stessa dimensione: quella che fa stare in una riga la voce più
+     lunga (COMPETENZE, FORMAZIONE…). Voci di taglie diverse sembravano un errore.
+     Si toglie dallo spazio il piccolo spostamento dell'hover, per non tagliarle mentre
+     si accendono d'arancio. */
+  const list = menu.querySelector('.menu-list');
   const links = [...menu.querySelectorAll('.menu-list a')];
-  /* la voce si sposta di qualche px al passaggio/tocco (:hover): si toglie quel margine
-     dallo spazio disponibile PRIMA di calcolare la dimensione, altrimenti una voce
-     lunga già al limite usciva dal bordo (tagliata) proprio mentre si accende d'arancio */
-  const HOVER_SHIFT = 10;
+  const names = links.map((a) => a.querySelector('.menu-name'));
+  const HOVER_SHIFT = 14;
   function fitMenu() {
-    links.forEach((a) => {
-      a.style.fontSize = '';
-      const avail = a.clientWidth - HOVER_SHIFT;
-      const full = a.scrollWidth;
-      if (avail > 0 && full > avail) {
-        const base = parseFloat(getComputedStyle(a).fontSize);
-        a.style.fontSize = (base * (avail / full) * 0.97) + 'px';
-      }
-    });
+    if (menu.hidden) return;
+    list.style.removeProperty('--menu-fs');
+    const base = parseFloat(getComputedStyle(links[0]).fontSize);
+    let ratio = 1;
+    names.forEach((n) => { const avail = n.clientWidth - HOVER_SHIFT; if (avail > 0 && n.scrollWidth > avail) ratio = Math.min(ratio, avail / n.scrollWidth); });
+    if (ratio < 1) list.style.setProperty('--menu-fs', `${base * ratio * 0.98}px`);
   }
   window.addEventListener('resize', fitMenu);
+
+  /* la voce della sezione in cui ti trovi è già accesa quando apri il menu */
+  function markCurrent() {
+    const mid = innerHeight * 0.4;
+    let current = null;
+    links.forEach((a) => { const el = document.querySelector(a.getAttribute('href')); if (el && el.getBoundingClientRect().top <= mid) current = a; });
+    links.forEach((a) => { if (a === current) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+  }
 
   function setOpen(next) {
     if (next === open) return;
@@ -40,9 +45,11 @@ export function initMenu({ onNavigate, lockScroll, unlockScroll }) {
       requestAnimationFrame(() => {
         panel.style.transition = 'clip-path .9s cubic-bezier(.16,1,.3,1)';
         panel.style.clipPath = `circle(${Math.hypot(document.documentElement.clientWidth, document.documentElement.clientHeight) * 1.1}px at ${cx}px ${cy}px)`;
-        menu.classList.add('is-open');
+        menu.classList.add('is-open', 'is-entering');
+        setTimeout(() => menu.classList.remove('is-entering'), 1100);
       });
       lockScroll?.();
+      markCurrent();
       fitMenu();
       setTimeout(() => menu.querySelector('a')?.focus({ preventScroll: true }), 350);
     } else {

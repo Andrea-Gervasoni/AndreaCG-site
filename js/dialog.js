@@ -25,8 +25,16 @@ export function initProjectDialog({ objects, lockScroll, unlockScroll }) {
     }
     fields.links.innerHTML = '';
     const links = SITE.projects[name];
-    if (links?.live) { const a = document.createElement('a'); a.href = links.live; a.target = '_blank'; a.rel = 'noreferrer'; a.className = 'is-primary'; a.textContent = t('projects.visit') + ' ↗'; fields.links.append(a); }
-    if (links?.code) { const a = document.createElement('a'); a.href = links.code; a.target = '_blank'; a.rel = 'noreferrer'; a.textContent = t('projects.code') + ' ↗'; fields.links.append(a); }
+    const link = (href, label, primary) => {
+      const a = document.createElement('a'); a.href = href; a.target = '_blank'; a.rel = 'noreferrer';
+      a.className = primary ? 'fx-fill is-primary' : 'fx-fill';
+      const text = document.createElement('span'); text.textContent = label;
+      const arrow = document.createElement('i'); arrow.className = 'fx-arrow'; arrow.dataset.dir = 'ne'; arrow.setAttribute('aria-hidden', 'true');
+      const glyph = document.createElement('span'); glyph.textContent = '↗'; arrow.append(glyph);
+      a.append(text, arrow); fields.links.append(a);
+    };
+    if (links?.live) link(links.live, t('projects.visit'), true);
+    if (links?.code) link(links.code, t('projects.code'), false);
     if (!links) { const s = document.createElement('span'); s.className = 'kicker'; s.textContent = getLanguage() === 'it' ? 'Prototipo · demo su richiesta' : 'Prototype · demo on request'; fields.links.append(s); }
   }
 

@@ -15,19 +15,14 @@ import { initScroll } from './scroll.js';
 import { fitLockup, createSignature } from './brand.js';
 import { createFlight } from './flight.js';
 import { createEducation } from './education.js';
+import { initButtons, animateLanguageSwap } from './buttons.js';
+import { createSkills } from './skills.js';
+import { createLanguages } from './languages.js';
+import { createMedium } from './medium.js';
 
 const { gsap, ScrollTrigger, Lenis } = window;
 gsap.registerPlugin(ScrollTrigger);
-/* iOS Safari: la barra degli indirizzi che si nasconde/riappare allo scroll cambia
-   l'altezza della viewport. Senza questo, ScrollTrigger tratta ogni cambio come un
-   resize vero e ricalcola gli spazi dei pin (hero, esperienze, formazione) — per
-   una frazione di secondo lo spazio ricalcolato non combacia col contenuto e si
-   vede uno strato bianco sotto. Le sezioni pinnate usano già 100svh (stabile, non
-   dipende dal chrome del browser): dire a ScrollTrigger di ignorare questi resize
-   "piccoli" tipici da mobile chiude il problema alla fonte, non lo maschera. */
-ScrollTrigger.config({ ignoreMobileResize: true });
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const pointerFine = matchMedia('(pointer: fine)').matches;
 history.scrollRestoration = 'manual';
 
 /* --- lingua (?lang=en forza la lingua, utile per i test) --- */
@@ -61,13 +56,17 @@ function unlockScroll() {
   document.body.classList.remove('is-locked');
   document.body.style.top = '';
   window.scrollTo(0, lockedAt);
+  /* col body bloccato la pagina "misura" un solo schermo e Lenis aggiorna le sue
+     dimensioni con 250 ms di ritardo: una voce del menu toccata subito dopo trovava
+     fine pagina = 0 e riportava in cima invece che alla sezione. Si rimisura subito. */
+  lenis.resize();
   lenis.start();
 }
-function scrollToTarget(hash) {
-  if (!hash || hash === '#top') { lenis.scrollTo(0, { duration: 1.4 }); return; }
+function scrollToTarget(hash, { immediate = false } = {}) {
+  if (!hash || hash === '#top') { lenis.scrollTo(0, { duration: 1.4, immediate }); return; }
   const el = document.querySelector(hash); if (!el) return;
-  const pinned = ['#experience', '#education'].includes(hash);
-  lenis.scrollTo(el, { offset: pinned ? 0 : -(matchMedia('(max-width: 860px), (max-height: 560px)').matches ? 78 : 12), duration: 1.5 });
+  const pinned = ['#experience', '#education', '#writing'].includes(hash);
+  lenis.scrollTo(el, { offset: pinned ? 0 : -(matchMedia('(max-width: 860px), (max-height: 560px)').matches ? 78 : 12), duration: 1.5, immediate, force: immediate });
 }
 document.addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="#"]'); if (!a || a.hasAttribute('data-menu-link')) return;
@@ -120,28 +119,9 @@ if (badge) {
   badge.addEventListener('pointerleave', () => { badge.style.setProperty('--ry', '0deg'); badge.style.setProperty('--rx', '0deg'); });
 }
 
-/* --- schede progetti: lieve sollevamento + alone che segue il cursore, come il badge.
-   Niente tilt 3D via CSS: la scheda ha già un vero oggetto 3D dentro (ridondante),
-   e un perspective/preserve-3d qui sopra ha creato un artefatto di compositing
-   con i pannelli in vetro (backdrop-filter) della topbar durante i test — lo stesso
-   tipo di bug che Safari/iOS mostra spesso mescolando le due cose. Restano solo
-   trasformazioni 2D, prive di quel rischio. */
-if (grid && pointerFine && !reduced) {
-  grid.querySelectorAll('.pcard').forEach((card) => {
-    const liftTo = gsap.quickTo(card, 'y', { duration: .6, ease: 'power3.out' });
-    card.addEventListener('pointermove', (e) => {
-      const r = card.getBoundingClientRect();
-      const nx = (e.clientX - r.left) / r.width, ny = (e.clientY - r.top) / r.height;
-      liftTo(-4);
-      card.style.setProperty('--mx', `${nx * 100}%`);
-      card.style.setProperty('--my', `${ny * 100}%`);
-    });
-    card.addEventListener('pointerleave', () => liftTo(0));
-  });
-}
-
 /* --- moduli UI --- */
 initGlass();
+initButtons({ reduced });
 const titles = initTitles();
 const menu = initMenu({ onNavigate: scrollToTarget, lockScroll, unlockScroll });
 const dialog = initProjectDialog({ objects, lockScroll, unlockScroll });
@@ -149,21 +129,29 @@ const fanEl = document.querySelector('[data-fan]');
 const fan = fanEl ? createFan(fanEl, { lang: getLanguage(), gsap }) : null;
 const signature = createSignature(document.querySelector('[data-signature]'), { gsap, speed: 2600 });
 const scroll = initScroll({ field, gsap, ScrollTrigger, lenis, signature, flight, education });
+const skills = createSkills({ ScrollTrigger, reduced });
+const languages = createLanguages({ reduced, lang: getLanguage() });
+const writingSection = document.querySelector('[data-writing]');
+const medium = writingSection ? createMedium({ section: writingSection, canvas: writingSection.querySelector('[data-writing-canvas]'), ScrollTrigger, reduced }) : null;
 fitLockup(document.querySelector('[data-lockup]'), { width: 150 });
 
 /* --- cambio lingua: aggiorna ciò che dipende dal testo --- */
 onLanguageChange((lang) => {
+  animateLanguageSwap();
   titles.refresh();
   fan?.relabel(lang);
   dialog.refresh();
   scroll.rebindStatement();
   menu.fit();
+  skills?.refresh();
+  languages?.refresh(lang);
+  medium?.setLanguage(lang);
 });
 
 /* --- visibilità: rendiamo solo ciò che si vede --- */
 const visible = new Map();
 const vio = new IntersectionObserver((entries) => entries.forEach((e) => visible.set(e.target, e.isIntersecting)), { rootMargin: '10% 0px' });
-[document.querySelector('[data-hero]'), grid, expSection, eduSection, document.querySelector('[data-footer]')].forEach((el) => el && vio.observe(el));
+[document.querySelector('[data-hero]'), grid, expSection, eduSection, writingSection, document.querySelector('[data-footer]')].forEach((el) => el && vio.observe(el));
 const isVisible = (el) => visible.get(el) !== false;
 const heroEl = document.querySelector('[data-hero]');
 const footerEl = document.querySelector('[data-footer]');
@@ -183,6 +171,7 @@ function loop(now) {
   fan?.frame(now);
   if (education && isVisible(eduSection)) education.frame(now, dt);
   if (footerAvatar && isVisible(footerEl)) footerAvatar.frame(now, dt);
+  if (medium && isVisible(writingSection)) medium.frame(now, dt);
 }
 requestAnimationFrame(loop);
 
@@ -195,12 +184,18 @@ bootSign?.play();
 const started = performance.now();
 Promise.all([Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1800))]), new Promise((r) => setTimeout(r, 300))]).then(() => {
   bar?.style.setProperty('--p', 1);
+  medium?.invalidate();   /* i font sono arrivati: lo schermo del portatile si ridisegna */
   const minimum = reduced ? 300 : (bootSign ? bootSign.duration * 1000 + 250 : 800);
   const wait = Math.max(0, minimum - (performance.now() - started));
   setTimeout(() => {
     boot?.classList.add('is-done');
     boot?.setAttribute('aria-hidden', 'true');
+    /* finita la dissolvenza esce dal layout: un overlay fixed a tutto schermo
+       è proprio ciò che Safari 26 usa per colorare le sue barre */
+    setTimeout(() => { if (boot) boot.hidden = true; }, 700);
     ScrollTrigger.refresh();
+    /* un link diretto a una sezione (…/#contact) ci arriva dopo l'apertura */
+    if (location.hash.length > 1) scrollToTarget(location.hash, { immediate: true });
     if (!reduced) setTimeout(() => avatar.wave(), 450);
   }, wait);
 });

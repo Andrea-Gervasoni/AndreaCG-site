@@ -20,17 +20,10 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
   const state = { bodyDark: false, overDark: 0, heroP: 0 };
 
   function applyTopbar() { topbar.dataset.onDark = String(state.bodyDark || state.overDark > 0 || (state.heroP > 0.1 && state.heroP < 1)); }
-  /* Safari spesso non ridipinge la sua barra se il meta theme-color viene solo
-     mutato (setAttribute): resta fermo al colore precedente finché non succede
-     altro (cambio tab, refresh...). Sostituire il tag di sana pianta, invece di
-     modificarlo, è il modo che WebKit nota in modo affidabile. */
-  function setThemeColor(hex) {
-    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
-    const meta = document.createElement('meta');
-    meta.setAttribute('name', 'theme-color');
-    meta.setAttribute('content', hex);
-    document.head.appendChild(meta);
-  }
+  /* theme-color colora la barra di Chrome su Android. Safari 26 lo ignora: lì la
+     fascia dipende dagli elementi fixed/sticky ai bordi (vedi .topbar nel CSS). */
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  function setThemeColor(hex) { themeMeta?.setAttribute('content', hex); }
   function setTheme(dark) {
     state.bodyDark = dark;
     body.dataset.theme = dark ? 'dark' : 'light';
@@ -140,16 +133,53 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
     ScrollTrigger.create({ trigger: edu, start: 'top top', end: 'bottom bottom', scrub: 0.6, onUpdate: (self) => education.setProgress(self.progress), onRefresh: (self) => education.setProgress(self.progress) });
   }
 
-  /* ---------- Ingressi semplici ---------- */
-  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: 0.18 });
-  document.querySelectorAll('[data-rise], .lang').forEach((el) => io.observe(el));
+  /* ---------- Ingressi: gli elementi che entrano insieme arrivano a cascata ---------- */
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const io = new IntersectionObserver((entries) => {
+    let k = 0;
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      if (!reducedMotion && k) { el.style.transitionDelay = `${k * 75}ms`; setTimeout(() => { el.style.transitionDelay = ''; }, 1300 + k * 75); }
+      k++;
+      el.classList.add('is-in'); io.unobserve(el);
+    });
+  }, { threshold: 0.18 });
+  document.querySelectorAll('[data-rise]').forEach((el) => io.observe(el));
 
-  /* ---------- Topbar: si nasconde scendendo veloce, torna risalendo ---------- */
+  /* ---------- "In numeri": le cifre contano fino al loro valore ---------- */
+  const counters = [...document.querySelectorAll('.facts dt')];
+  const countIo = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    countIo.unobserve(e.target);
+    if (reducedMotion) return;
+    const el = e.target, text = el.textContent, m = /\d[\d.,]*/.exec(text);
+    if (!m) return;
+    const sep = /\d[.,]\d{3}\b/.test(m[0]) ? m[0].replace(/\d/g, '')[0] : '';
+    const value = parseInt(m[0].replace(/[.,]/g, ''), 10);
+    const fmt = (n) => sep ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep) : String(n);
+    const t0 = performance.now(), dur = 1500;
+    let written = text.replace(m[0], fmt(0));
+    el.textContent = written;
+    const step = (now) => {
+      if (el.textContent !== written) return;          /* la lingua è cambiata nel frattempo: vince il testo nuovo */
+      const p = Math.min(1, (now - t0) / dur), k = 1 - Math.pow(1 - p, 4);
+      written = text.replace(m[0], fmt(Math.round(value * k)));
+      el.textContent = p < 1 ? written : text;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }), { threshold: 0.6 });
+  counters.forEach((el) => countIo.observe(el));
+
+  /* ---------- Topbar: scendendo il nome si ritira (non copre più i titoli grandi),
+     lingua e menu restano sempre a portata; risalendo il nome torna ---------- */
   let lastY = 0;
-  lenis.on('scroll', ({ scroll, direction, velocity }) => {
-    if (scroll < VH() * 2.4) { topbar.classList.remove('is-hidden'); lastY = scroll; return; }
-    if (direction === 1 && velocity > 1.5 && scroll - lastY > 40) { topbar.classList.add('is-hidden'); lastY = scroll; }
-    else if (direction === -1) { topbar.classList.remove('is-hidden'); lastY = scroll; }
+  lenis.on('scroll', ({ scroll, direction }) => {
+    if (scroll < VH() * 2.4) { topbar.classList.remove('is-compact'); lastY = scroll; return; }
+    if (direction === 1 && scroll - lastY > 24) { topbar.classList.add('is-compact'); lastY = scroll; }
+    else if (direction === -1 && lastY - scroll > 24) { topbar.classList.remove('is-compact'); lastY = scroll; }
+    else if (Math.sign(scroll - lastY) !== direction) lastY = scroll;
   });
 
   /* ---------- Marquee: velocità legata allo scroll ---------- */
@@ -166,34 +196,6 @@ export function initScroll({ field, gsap, ScrollTrigger, lenis, signature, fligh
       if (tr.x > 0) tr.x -= half; if (tr.x < -half) tr.x += half;
       tr.el.style.transform = `translate3d(${tr.x}px,0,0)`;
     }
-  }
-
-  /* ---------- Magnetico ---------- */
-  /* molla morbida (quickTo) invece di un 1:1 col cursore: arriva e si assesta come
-     un oggetto con un po' di massa, non scatta né rimbalza. Solo con un puntatore
-     preciso (niente touch) e mai con reduced-motion. */
-  if (matchMedia('(pointer: fine)').matches && !reduced) {
-    document.querySelectorAll('[data-magnetic]').forEach((el) => {
-      const pull = Number(el.dataset.magnetic) || 0.24;
-      const xTo = gsap.quickTo(el, 'x', { duration: .5, ease: 'power3.out' });
-      const yTo = gsap.quickTo(el, 'y', { duration: .5, ease: 'power3.out' });
-      el.addEventListener('pointermove', (e) => {
-        const r = el.getBoundingClientRect();
-        xTo((e.clientX - (r.left + r.width / 2)) * pull);
-        yTo((e.clientY - (r.top + r.height / 2)) * pull);
-      });
-      el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
-    });
-  }
-
-  /* ---------- Ritratto: si apre come il quadro della hero, in miniatura ---------- */
-  const portrait = document.querySelector('[data-photo-reveal] img');
-  if (portrait && !reduced) {
-    gsap.set(portrait, { clipPath: 'inset(0% 0% 100% 0%)', scale: 1.12, transformOrigin: '50% 100%' });
-    ScrollTrigger.create({
-      trigger: portrait, start: 'top 85%', once: true,
-      onEnter: () => gsap.to(portrait, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 1.3, ease: 'power4.out' })
-    });
   }
 
   return {

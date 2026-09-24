@@ -59,8 +59,5 @@ export function initGlass() {
     }
   }
   addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  /* feedback alla pressione */
-  document.addEventListener('pointerdown', (e) => { const g = e.target.closest?.('.glass'); if (g) { g.classList.add('is-pressed'); } });
-  document.addEventListener('pointerup', () => document.querySelectorAll('.glass.is-pressed').forEach((g) => g.classList.remove('is-pressed')));
-  document.addEventListener('pointercancel', () => document.querySelectorAll('.glass.is-pressed').forEach((g) => g.classList.remove('is-pressed')));
+  /* la pressione è gestita per tutti i tasti in buttons.js */
 }

@@ -42,7 +42,8 @@
     <span class="boot-bar"><i></i></span>
   </div>
 
-  <header class="topbar" data-topbar>
+  <header class="topbar-shell">
+  <div class="topbar" data-topbar>
     <a class="lockup" href="#top" data-i18n-aria="nav.home.aria" aria-label="Andrea Gervasoni, inizio">
       <svg class="lockup-svg" viewBox="0 0 150 54.5" data-lockup aria-hidden="true">
         <text data-lockup-first x="0" y="36" font-size="51.4" textLength="150" lengthAdjust="spacingAndGlyphs" class="lockup-first">ANDREA</text>
@@ -52,31 +53,34 @@
     </a>
     <span></span>
     <div class="topbar-actions">
-      <button class="lang-toggle glass" type="button" data-lang-toggle aria-label="Switch to English">
+      <button class="lang-toggle glass" type="button" data-lang-toggle data-magnetic="0.14" aria-label="Switch to English">
         <i class="lang-knob" aria-hidden="true"></i><span data-lang-opt="it">IT</span><span data-lang-opt="en">EN</span>
       </button>
-      <button class="menu-btn glass" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu" aria-label="Menu">
+      <button class="menu-btn glass" type="button" data-menu-toggle data-magnetic="0.28" aria-expanded="false" aria-controls="menu" aria-label="Menu">
         <span></span><span></span>
       </button>
     </div>
+  </div>
   </header>
 
   <!-- Menu a schermo intero -->
   <nav class="menu" id="menu" data-menu aria-label="Menu" hidden>
     <div class="menu-panel glass-heavy" data-lenis-prevent>
       <ol class="menu-list">
-        <li><a href="#about" data-menu-link><small>01</small><span data-i18n="nav.about">Chi sono</span></a></li>
-        <li><a href="#projects" data-menu-link><small>02</small><span data-i18n="nav.projects">Progetti</span></a></li>
-        <li><a href="#experience" data-menu-link><small>03</small><span data-i18n="nav.experience">Esperienze</span></a></li>
-        <li><a href="#sandiego" data-menu-link><small>04</small><span data-i18n="nav.sandiego">San Diego</span></a></li>
-        <li><a href="#education" data-menu-link><small>05</small><span data-i18n="nav.education">Formazione</span></a></li>
-        <li><a href="#skills" data-menu-link><small>06</small><span data-i18n="nav.skills">Competenze</span></a></li>
-        <li><a href="#languages" data-menu-link><small>07</small><span data-i18n="nav.languages">Lingue</span></a></li>
-        <li><a href="#contact" data-menu-link><small>08</small><span data-i18n="nav.contact">Contatti</span></a></li>
+        <li><a href="#about" data-menu-link><small>01</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.about">Chi sono</span></span></a></li>
+        <li><a href="#projects" data-menu-link><small>02</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.projects">Progetti</span></span></a></li>
+        <li><a href="#experience" data-menu-link><small>03</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.experience">Esperienze</span></span></a></li>
+        <li><a href="#sandiego" data-menu-link><small>04</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.sandiego">San Diego</span></span></a></li>
+        <li><a href="#education" data-menu-link><small>05</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.education">Formazione</span></span></a></li>
+        <li><a href="#skills" data-menu-link><small>06</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.skills">Competenze</span></span></a></li>
+        <li><a href="#languages" data-menu-link><small>07</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.languages">Lingue</span></span></a></li>
+        <li><a href="#writing" data-menu-link><small>08</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.writing">Scritti</span></span></a></li>
+        <li><a href="#contact" data-menu-link><small>09</small><span class="menu-roll"><span class="menu-name" data-i18n="nav.contact">Contatti</span></span></a></li>
       </ol>
       <div class="menu-foot">
-        <a href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer">LinkedIn ↗</a>
-        <a href="https://github.com/Andrea-Gervasoni" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a class="fx-roll" href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer"><span>LinkedIn ↗</span></a>
+        <a class="fx-roll" href="https://github.com/Andrea-Gervasoni" target="_blank" rel="noreferrer"><span>GitHub ↗</span></a>
+        <a class="fx-roll" href="https://medium.com/@gervandre09" target="_blank" rel="noreferrer"><span>Medium ↗</span></a>
         <span class="menu-sign"><svg viewBox="0 0 785 544" aria-hidden="true"><use href="#signature-paths"/></svg></span>
       </div>
     </div>
@@ -121,7 +125,7 @@
                 </span>
               </span>
             </div>
-            <p class="hero-scroll glass"><span data-i18n="hero.scroll">Scorri</span><i></i></p>
+            <a class="hero-scroll glass" href="#about" data-magnetic="0.2"><span data-i18n="hero.scroll">Scorri</span><i></i></a>
           </div>
         </div>
 
@@ -152,8 +156,8 @@
           <p data-i18n="about.focus">AI e prodotto. Con TKS sto lavorando per trovare la mia strada definitiva: esploro ambiti diversi, costruisco, misuro.</p>
           <span class="focus-dot" aria-hidden="true"></span>
         </aside>
-        <figure class="about-photo" data-photo-reveal aria-hidden="true">
-          <img src="assets/andrea.webp" width="992" height="1350" alt="" loading="lazy" decoding="async">
+        <figure class="about-photo" aria-hidden="true">
+          <img src="assets/andrea.webp" srcset="assets/andrea-s.webp 540w, assets/andrea.webp 1086w" sizes="(max-width: 860px) 70vw, 30vw" width="1086" height="1448" alt="" loading="lazy" decoding="async">
         </figure>
       </div>
     </section>
@@ -171,40 +175,36 @@
         <canvas class="objects-canvas" data-objects-canvas aria-hidden="true"></canvas>
 
         <article class="pcard" data-project="postilla">
-          <span class="pcard-glow" aria-hidden="true"></span>
           <div class="pcard-obj" data-object="postilla"></div>
           <div class="pcard-meta">
             <span class="pcard-n">01</span>
             <h3 data-i18n="p1.name">Postilla</h3>
             <p><span data-i18n="p1.type">AI · documenti</span> · <span data-i18n="p1.year">2026</span></p>
           </div>
-          <button class="pcard-open" type="button" data-open-project="postilla" data-magnetic="0.3"><span data-i18n="projects.open">Apri la scheda</span><i>→</i></button>
+          <button class="pcard-open fx-fill" type="button" data-open-project="postilla"><span data-i18n="projects.open">Apri la scheda</span><i class="fx-arrow" data-dir="e" aria-hidden="true"><span>→</span></i></button>
         </article>
 
         <article class="pcard" data-project="orizzonte">
-          <span class="pcard-glow" aria-hidden="true"></span>
           <div class="pcard-obj" data-object="orizzonte"></div>
           <div class="pcard-meta">
             <span class="pcard-n">02</span>
             <h3 data-i18n="p2.name">Orizzonte</h3>
             <p><span data-i18n="p2.type">Finanza · simulazione</span> · <span data-i18n="p2.year">2026</span></p>
           </div>
-          <button class="pcard-open" type="button" data-open-project="orizzonte" data-magnetic="0.3"><span data-i18n="projects.open">Apri la scheda</span><i>→</i></button>
+          <button class="pcard-open fx-fill" type="button" data-open-project="orizzonte"><span data-i18n="projects.open">Apri la scheda</span><i class="fx-arrow" data-dir="e" aria-hidden="true"><span>→</span></i></button>
         </article>
 
         <article class="pcard" data-project="formularium">
-          <span class="pcard-glow" aria-hidden="true"></span>
           <div class="pcard-obj" data-object="formularium"></div>
           <div class="pcard-meta">
             <span class="pcard-n">03</span>
             <h3 data-i18n="p3.name">Formularium</h3>
             <p><span data-i18n="p3.type">Matematica · didattica</span> · <span data-i18n="p3.year">2026</span></p>
           </div>
-          <button class="pcard-open" type="button" data-open-project="formularium" data-magnetic="0.3"><span data-i18n="projects.open">Apri la scheda</span><i>→</i></button>
+          <button class="pcard-open fx-fill" type="button" data-open-project="formularium"><span data-i18n="projects.open">Apri la scheda</span><i class="fx-arrow" data-dir="e" aria-hidden="true"><span>→</span></i></button>
         </article>
 
         <article class="pcard pcard-next" data-project="next">
-          <span class="pcard-glow" aria-hidden="true"></span>
           <div class="pcard-obj" data-object="next"></div>
           <div class="pcard-meta">
             <span class="pcard-n">04</span>
@@ -220,7 +220,7 @@
     <div class="pdialog" data-pdialog role="dialog" aria-modal="true" aria-labelledby="pdialog-title" hidden>
       <div class="pdialog-backdrop" data-pdialog-close></div>
       <div class="pdialog-panel glass-heavy">
-        <button class="pdialog-close glass" type="button" data-pdialog-close aria-label="Chiudi" data-i18n-aria="projects.close">×</button>
+        <button class="pdialog-close glass" type="button" data-pdialog-close data-magnetic="0.3" aria-label="Chiudi" data-i18n-aria="projects.close"><span aria-hidden="true">×</span></button>
         <!-- lo scroll vive qui, separato dal pannello arrotondato/sfocato: su iOS lo
              scroll dentro un elemento con border-radius + backdrop-filter lasciava
              un segno (il bordo arrotondato non si ridisegnava bene durante lo scroll) -->
@@ -306,9 +306,9 @@
       <div class="fan" data-fan tabindex="0" aria-roledescription="carosello" aria-label="Foto da San Diego">
         <div class="fan-stage" data-fan-stage></div>
         <div class="fan-bar">
-          <button class="fan-btn glass" type="button" data-fan-prev aria-label="Foto precedente" data-i18n-aria="sd.prev">←</button>
+          <button class="fan-btn glass" type="button" data-fan-prev aria-label="Foto precedente" data-i18n-aria="sd.prev" data-magnetic="0.3"><i class="fx-arrow" data-dir="w" aria-hidden="true"><span>←</span></i></button>
           <p class="fan-caption"><span data-fan-caption></span><small data-fan-counter>01 / 14</small></p>
-          <button class="fan-btn glass" type="button" data-fan-next aria-label="Foto successiva" data-i18n-aria="sd.next">→</button>
+          <button class="fan-btn glass" type="button" data-fan-next aria-label="Foto successiva" data-i18n-aria="sd.next" data-magnetic="0.3"><i class="fx-arrow" data-dir="e" aria-hidden="true"><span>→</span></i><svg class="fan-timer" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5"/></svg></button>
         </div>
       </div>
       <div class="wrap diary-words">
@@ -372,44 +372,187 @@
     </section>
 
     <!-- ============ 7. COMPETENZE ============ -->
-    <section class="section skills" id="skills">
-      <div class="wrap">
-        <p class="kicker" data-i18n="sk.kicker">06 — Competenze</p>
-        <h2 class="title" data-title="orbit" data-i18n="sk.title">COMPETENZE</h2>
-        <p class="lead" data-i18n="sk.intro">Sette discipline che uso insieme. Passaci sopra.</p>
-        <ul class="skill-list" data-skills>
-          <li class="skill" data-rise><span>01</span><h3 data-i18n="s1.n">Tecnologia</h3><p data-i18n="s1.d">Strumenti AI · sviluppo web · C++ e JavaScript · prototipi</p><em data-i18n="s1.h">Trasformare una domanda in qualcosa che si può provare.</em></li>
-          <li class="skill" data-rise><span>02</span><h3 data-i18n="s2.n">Prodotto</h3><p data-i18n="s2.d">Definizione del problema · iterazione · sistemi</p><em data-i18n="s2.h">Trovare l’attrito, inquadrarlo bene, migliorare con metodo.</em></li>
-          <li class="skill" data-rise><span>03</span><h3 data-i18n="s3.n">Design</h3><p data-i18n="s3.d">UI · UX · direzione visiva · interazione</p><em data-i18n="s3.h">Rendere ciò che è utile chiaro e piacevole da usare.</em></li>
-          <li class="skill" data-rise><span>04</span><h3 data-i18n="s4.n">Business</h3><p data-i18n="s4.d">Imprenditorialità · pitch · persuasione</p><em data-i18n="s4.h">Dare a un’idea una ragione per esistere oltre il prototipo.</em></li>
-          <li class="skill" data-rise><span>05</span><h3 data-i18n="s5.n">Leadership</h3><p data-i18n="s5.d">Iniziativa · presentazione · coinvolgimento</p><em data-i18n="s5.h">Portare le persone dentro il ragionamento, non solo alla risposta.</em></li>
-          <li class="skill" data-rise><span>06</span><h3 data-i18n="s6.n">Analisi</h3><p data-i18n="s6.d">Matematica · fisica · decisioni basate sui dati</p><em data-i18n="s6.h">Usare i numeri per mettere alla prova un’intuizione.</em></li>
-          <li class="skill" data-rise><span>07</span><h3 data-i18n="s7.n">Comunicazione</h3><p data-i18n="s7.d">Ricerca · scrittura · chiarezza</p><em data-i18n="s7.h">Rendere leggibili le idee complesse a chi ne ha bisogno.</em></li>
-        </ul>
+    <section class="section skills" id="skills" data-skills>
+      <div class="skills-pin">
+        <p class="skills-ghost" aria-hidden="true"><span data-skill-ghost>01</span></p>
+        <div class="wrap skills-head">
+          <p class="kicker" data-i18n="sk.kicker">06 — Competenze</p>
+          <h2 class="title" data-title="orbit" data-i18n="sk.title">COMPETENZE</h2>
+          <p class="lead" data-i18n="sk.intro">Sette discipline che uso insieme.</p>
+        </div>
+        <ol class="deck" data-deck>
+          <li class="deck-card" data-deck-card style="--i:0">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">01</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s1.n">Tecnologia</h3>
+                <p class="deck-tags" data-i18n="s1.d">Strumenti AI · sviluppo web · C++ e JavaScript · prototipi</p>
+                <p class="deck-line" data-i18n="s1.h">Trasformare una domanda in qualcosa che si può provare.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:1">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">02</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s2.n">Prodotto</h3>
+                <p class="deck-tags" data-i18n="s2.d">Definizione del problema · iterazione · sistemi</p>
+                <p class="deck-line" data-i18n="s2.h">Trovare l’attrito, inquadrarlo bene, migliorare con metodo.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:2">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">03</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s3.n">Design</h3>
+                <p class="deck-tags" data-i18n="s3.d">UI · UX · direzione visiva · interazione</p>
+                <p class="deck-line" data-i18n="s3.h">Rendere ciò che è utile chiaro e piacevole da usare.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:3">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">04</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s4.n">Business</h3>
+                <p class="deck-tags" data-i18n="s4.d">Imprenditorialità · pitch · persuasione</p>
+                <p class="deck-line" data-i18n="s4.h">Dare a un’idea una ragione per esistere oltre il prototipo.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:4">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">05</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s5.n">Leadership</h3>
+                <p class="deck-tags" data-i18n="s5.d">Iniziativa · presentazione · coinvolgimento</p>
+                <p class="deck-line" data-i18n="s5.h">Portare le persone dentro il ragionamento, non solo alla risposta.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:5">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">06</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s6.n">Analisi</h3>
+                <p class="deck-tags" data-i18n="s6.d">Matematica · fisica · decisioni basate sui dati</p>
+                <p class="deck-line" data-i18n="s6.h">Usare i numeri per mettere alla prova un’intuizione.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+          <li class="deck-card" data-deck-card style="--i:6">
+            <div class="deck-face">
+              <p class="deck-top"><span class="deck-n">07</span><span class="deck-of">/ 07</span></p>
+              <svg class="deck-art" viewBox="0 0 240 240" aria-hidden="true"></svg>
+              <div class="deck-text">
+                <h3 class="deck-name" data-i18n="s7.n">Comunicazione</h3>
+                <p class="deck-tags" data-i18n="s7.d">Ricerca · scrittura · chiarezza</p>
+                <p class="deck-line" data-i18n="s7.h">Rendere leggibili le idee complesse a chi ne ha bisogno.</p>
+              </div>
+              <span class="deck-glare" aria-hidden="true"></span>
+            </div>
+          </li>
+        </ol>
+        <div class="wrap deck-foot" aria-hidden="true">
+          <span class="deck-count" data-deck-count>01 / 07</span>
+          <span class="deck-bar"><i data-deck-bar></i></span>
+          <span class="deck-hint"><span data-i18n="hero.scroll">Scorri</span> ↓</span>
+        </div>
       </div>
     </section>
 
     <!-- ============ 8. LINGUE ============ -->
-    <section class="section languages" id="languages">
+    <section class="section languages" id="languages" data-langs data-dark-block>
       <div class="wrap">
         <p class="kicker" data-i18n="lang.kicker">07 — Lingue</p>
         <h2 class="title" data-title="morph" data-i18n="lang.title">LINGUE</h2>
-        <ul class="lang-list">
-          <li class="lang" data-rise><b>IT</b><div><h3 data-i18n="l1.n">Italiano</h3><p data-i18n="l1.note">Leggo, scrivo, discuto. Anche troppo.</p></div><span data-i18n="l1.l">Madrelingua</span><i style="--pct:100%"></i></li>
-          <li class="lang" data-rise><b>EN</b><div><h3 data-i18n="l2.n">Inglese</h3><p data-i18n="l2.note">Cambridge B1 Preliminary certificato · obiettivo C1</p></div><span data-i18n="l2.l">B2 in uso</span><i style="--pct:66%"></i></li>
-          <li class="lang" data-rise><b>ES</b><div><h3 data-i18n="l3.n">Spagnolo</h3><p data-i18n="l3.note">Base</p></div><span data-i18n="l3.l">A1</span><i style="--pct:22%"></i></li>
-          <li class="lang" data-rise><b>中</b><div><h3 data-i18n="l4.n">Cinese</h3><p data-i18n="l4.note">Una passione da sempre</p></div><span data-i18n="l4.l">A1</span><i style="--pct:22%"></i></li>
-        </ul>
+        <div class="langs">
+          <div class="globe-box">
+            <canvas class="globe" data-globe aria-hidden="true"></canvas>
+          </div>
+          <div class="lang-side">
+            <div class="hello" aria-hidden="true">
+              <p class="hello-word" data-hello-word><span class="hello-slot">Ciao.</span></p>
+              <p class="hello-meta"><i class="hello-wave"><b></b><b></b><b></b><b></b></i><span data-hello-meta>Italiano · Madrelingua</span></p>
+            </div>
+            <ul class="lang-grid" data-lang-list>
+            <li class="lang-tile" data-lang-row data-rise data-press data-code="it" data-hello="Ciao" style="--i:0">
+              <p class="lang-tile-top"><b class="lang-code" aria-hidden="true">IT</b><span class="lang-level" data-i18n="l1.l">Madrelingua</span></p>
+              <h3 data-i18n="l1.n">Italiano</h3>
+              <p class="lang-note" data-i18n="l1.note">Leggo, scrivo, discuto. Anche troppo.</p>
+              <ol class="cefr" aria-hidden="true"><li class="is-on" style="--s:0">A1</li><li class="is-on" style="--s:1">A2</li><li class="is-on" style="--s:2">B1</li><li class="is-on" style="--s:3">B2</li><li class="is-on" style="--s:4">C1</li><li class="is-on" style="--s:5">C2</li></ol>
+            </li>
+            <li class="lang-tile" data-lang-row data-rise data-press data-code="en" data-hello="Hello" style="--i:1">
+              <p class="lang-tile-top"><b class="lang-code" aria-hidden="true">EN</b><span class="lang-level" data-i18n="l2.l">B2 in uso</span></p>
+              <h3 data-i18n="l2.n">Inglese</h3>
+              <p class="lang-note" data-i18n="l2.note">Cambridge B1 Preliminary certificato · obiettivo C1</p>
+              <ol class="cefr" aria-hidden="true"><li class="is-on" style="--s:0">A1</li><li class="is-on" style="--s:1">A2</li><li class="is-on is-cert" style="--s:2">B1</li><li class="is-on" style="--s:3">B2</li><li class="is-goal" style="--s:4">C1</li><li style="--s:5">C2</li></ol>
+            </li>
+            <li class="lang-tile" data-lang-row data-rise data-press data-code="es" data-hello="Hola" style="--i:2">
+              <p class="lang-tile-top"><b class="lang-code" aria-hidden="true">ES</b><span class="lang-level" data-i18n="l3.l">A1</span></p>
+              <h3 data-i18n="l3.n">Spagnolo</h3>
+              <p class="lang-note" data-i18n="l3.note">Base</p>
+              <ol class="cefr" aria-hidden="true"><li class="is-on" style="--s:0">A1</li><li style="--s:1">A2</li><li style="--s:2">B1</li><li style="--s:3">B2</li><li style="--s:4">C1</li><li style="--s:5">C2</li></ol>
+            </li>
+            <li class="lang-tile" data-lang-row data-rise data-press data-code="zh" data-hello="你好" data-cjk style="--i:3">
+              <p class="lang-tile-top"><b class="lang-code" aria-hidden="true">中</b><span class="lang-level" data-i18n="l4.l">A1</span></p>
+              <h3 data-i18n="l4.n">Cinese</h3>
+              <p class="lang-note" data-i18n="l4.note">Una passione da sempre</p>
+              <ol class="cefr" aria-hidden="true"><li class="is-on" style="--s:0">A1</li><li style="--s:1">A2</li><li style="--s:2">B1</li><li style="--s:3">B2</li><li style="--s:4">C1</li><li style="--s:5">C2</li></ol>
+            </li>
+            </ul>
+            <p class="cefr-legend" aria-hidden="true"><span><i class="lg-on"></i><span data-i18n="lang.legend.on">Raggiunto</span></span><span><i class="lg-cert">✓</i><span data-i18n="lang.legend.cert">Certificato</span></span><span><i class="lg-goal"></i><span data-i18n="lang.legend.goal">Obiettivo</span></span></p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ============ 9. CONTATTI ============ -->
+    <!-- ============ 9. SCRITTI: Medium su un portatile 3D che si apre con lo scroll ============ -->
+    <section class="section writing" id="writing" data-writing>
+      <div class="writing-pin">
+        <div class="wrap writing-grid">
+          <div class="writing-copy">
+            <p class="kicker" data-i18n="wr.kicker">08 — Scritti</p>
+            <h2 class="title" data-title="flap" data-i18n="wr.title">SCRITTI</h2>
+            <p class="lead" data-i18n="wr.lead">Su Medium scrivo di AI, tecnologia e futuro: le storie vere dietro i titoli che girano, spiegate senza fumo.</p>
+            <ul class="writing-topics" aria-label="Di cosa scrivo" data-i18n-aria="wr.topics">
+              <li data-i18n="wr.t1">AI</li><li data-i18n="wr.t2">Tecnologia</li><li data-i18n="wr.t3">Sicurezza</li><li data-i18n="wr.t4">Futuro</li>
+            </ul>
+            <ol class="writing-steps" data-writing-steps>
+              <li class="is-on"><b>01</b><span><strong data-i18n="wr.s1.k">Il profilo</strong> <span data-i18n="wr.s1.d">@gervandre09, su Medium</span></span></li>
+              <li><b>02</b><span><strong data-i18n="wr.s2.k">La bozza</strong> <span data-i18n="wr.s2.d">un pezzo nuovo prende forma, riga dopo riga</span></span></li>
+              <li><b>03</b><span><strong data-i18n="wr.s3.k">Pubblicato</strong> <span data-i18n="wr.s3.d">esce su Medium: lo trovi lì, con gli altri</span></span></li>
+            </ol>
+            <a class="cta writing-cta fx-fill" href="https://medium.com/@gervandre09" target="_blank" rel="noreferrer" data-magnetic="0.22"><span data-i18n="wr.cta">Leggimi su Medium</span><i class="fx-arrow" data-dir="ne" aria-hidden="true"><span>↗</span></i></a>
+          </div>
+          <div class="writing-stage">
+            <canvas class="writing-canvas" data-writing-canvas aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <div class="wrap writing-progress" aria-hidden="true"><i data-writing-progress></i></div>
+      </div>
+    </section>
+
+    <!-- ============ 10. CONTATTI ============ -->
     <section class="section contact" id="contact">
       <div class="wrap">
         <p class="kicker" data-i18n="ct.kicker">08 — Contatti</p>
         <h2 class="title" data-title="rise" data-i18n="ct.title">PARLIAMONE</h2>
         <p class="lead" data-i18n="ct.text">Vivo a Bergamo. Mi interessano le persone ambiziose e i problemi che vale la pena risolvere.</p>
-        <a class="cta" href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer" data-magnetic><span data-i18n="ct.cta">Scrivimi su LinkedIn</span><i>↗</i></a>
+        <a class="cta fx-fill" href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer" data-magnetic="0.22"><span data-i18n="ct.cta">Scrivimi su LinkedIn</span><i class="fx-arrow" data-dir="ne" aria-hidden="true"><span>↗</span></i></a>
       </div>
     </section>
   </main>
@@ -425,23 +568,24 @@
       </div>
       <nav class="footer-col footer-pages" aria-label="Pagine">
         <p class="label" data-i18n="ft.pages">Pagine</p>
-        <a href="#about" data-i18n="nav.about">Chi sono</a>
-        <a href="#projects" data-i18n="nav.projects">Progetti</a>
-        <a href="#experience" data-i18n="nav.experience">Esperienze</a>
-        <a href="#education" data-i18n="nav.education">Formazione</a>
-        <a href="#skills" data-i18n="nav.skills">Competenze</a>
+        <a class="fx-roll" href="#about"><span data-i18n="nav.about">Chi sono</span></a>
+        <a class="fx-roll" href="#projects"><span data-i18n="nav.projects">Progetti</span></a>
+        <a class="fx-roll" href="#experience"><span data-i18n="nav.experience">Esperienze</span></a>
+        <a class="fx-roll" href="#education"><span data-i18n="nav.education">Formazione</span></a>
+        <a class="fx-roll" href="#skills"><span data-i18n="nav.skills">Competenze</span></a>
+        <a class="fx-roll" href="#writing"><span data-i18n="nav.writing">Scritti</span></a>
       </nav>
       <nav class="footer-col footer-follow" aria-label="Social">
         <p class="label" data-i18n="ft.follow">Trovami</p>
-        <a href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a href="https://github.com/Andrea-Gervasoni" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://andrea-gervasoni.github.io/Orizzonte-site/" target="_blank" rel="noreferrer">Orizzonte</a>
-        <a href="https://andrea-gervasoni.github.io/formularium/" target="_blank" rel="noreferrer">Formularium</a>
+        <a class="fx-roll" href="https://www.linkedin.com/in/andrea-gervasoni-121639375" target="_blank" rel="noreferrer"><span>LinkedIn</span></a>
+        <a class="fx-roll" href="https://github.com/Andrea-Gervasoni" target="_blank" rel="noreferrer"><span>GitHub</span></a>
+        <a class="fx-roll" href="https://andrea-gervasoni.github.io/Orizzonte-site/" target="_blank" rel="noreferrer"><span>Orizzonte</span></a>
+        <a class="fx-roll" href="https://andrea-gervasoni.github.io/formularium/" target="_blank" rel="noreferrer"><span>Formularium</span></a>
       </nav>
       <div class="footer-bottom">
         <span data-i18n="ft.copy">© 2026 Andrea Gervasoni · Bergamo, Italia</span>
         <span data-i18n="ft.made">Fatto a mano con Three.js, GSAP e un po’ di pazienza.</span>
-        <a href="#top" data-i18n="ft.top">Torna su</a>
+        <a class="fx-roll footer-top" href="#top"><span data-i18n="ft.top">Torna su</span><i class="fx-arrow" data-dir="n" aria-hidden="true"><span>↑</span></i></a>
       </div>
     </div>
   </footer>
