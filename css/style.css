@@ -118,6 +118,8 @@ ul, ol { padding: 0; list-style: none; }
   animation: grain 1.2s steps(4) infinite;
 }
 body[data-theme="dark"] .grain { mix-blend-mode: screen; opacity: .07; }
+/* sui telefoni la grana (un livello a tutto schermo in fusione, animato) costava troppo allo scroll */
+@media (pointer: coarse) { .grain { display: none; } }
 @keyframes grain { 0% { transform: translate(0, 0); } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -3%); } 75% { transform: translate(-1%, -1%); } 100% { transform: translate(0, 0); } }
 
 main { position: relative; z-index: 2; }
@@ -150,11 +152,19 @@ main { position: relative; z-index: 2; }
 .title .word { display: inline-block; white-space: nowrap; }
 
 /* Boot */
-.boot { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; background: var(--paper); transition: opacity .6s var(--ease-out), visibility .6s; }
+/* Il fondo del caricamento non sta sul contenitore fixed ma su un figlio: Safari 26
+   colorava le sue barre col fondo di un elemento fixed a tutto schermo e le teneva
+   bianche anche dopo l'apertura, finché non si scorreva. Contenitore invisibile,
+   figli visibili (come per la topbar): le barre restano trasparenti da subito. */
+.boot { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; visibility: hidden; transition: opacity .6s var(--ease-out); }
+.boot > * { visibility: visible; }
+.boot-bg { position: absolute; inset: 0; background: var(--paper); }
+.boot-sign { position: relative; }
 /* pointer-events va giù subito, non in transizione: per i 0,6s in cui la schermata
    di caricamento sfuma restava sopra a tutto e cliccabile, bloccando qualunque tocco
    (bastava aprire una scheda in quella finestra per restarci "murati dentro") */
-.boot.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.boot.is-done { opacity: 0; pointer-events: none; }
+.boot.is-done > * { visibility: hidden; transition: visibility 0s .6s; }
 .boot[hidden] { display: none; }
 .boot-sign { width: min(46vw, 300px); color: var(--ink); overflow: visible; }
 .boot-bar { position: absolute; left: 50%; bottom: 14vh; width: 120px; height: 2px; background: var(--paper-3); transform: translateX(-50%); overflow: hidden; border-radius: 2px; }
